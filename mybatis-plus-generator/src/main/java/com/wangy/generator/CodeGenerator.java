@@ -11,13 +11,9 @@ import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.sun.istack.internal.NotNull;
+
 import org.apache.commons.lang.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -34,8 +30,9 @@ public class CodeGenerator {
     private static String driverName = "com.mysql.cj.jdbc.Driver";
     private static String userName = "root";
     private static String password = "123456";
-    private static String path = "d:\\generatorCode\\";
-    private static String author = "系统默认";
+    /** 使用项目路径，配置好生成文件所在的包即可*/
+    private static String path = "web-security-demo/src/main/java";
+    private static String author = "wangy";
 
 
     private static String scanner(String tip) {
@@ -87,21 +84,22 @@ public class CodeGenerator {
     /**
      * package config
      */
-    static PackageConfig packageConfigBuilder(String moduleName, String submoduleName) {
+    static PackageConfig packageConfigBuilder() {
         return new PackageConfig()
-            .setParent("")
-            .setEntity("com.wangy." + moduleName + ".model.entity." + submoduleName)
-            .setMapper("com.dongxin." + moduleName + ".service." + submoduleName + ".mapper")
-            .setXml(submoduleName)
-            .setService("com.dongxin." + moduleName + ".service." + submoduleName + ".service")
-            .setServiceImpl("com.dongxin." + moduleName + ".service." + submoduleName + ".service.impl");
+            .setParent("com.wangy")
+            .setController("controller")
+            .setService("service")
+            .setServiceImpl("service.impl")
+            .setEntity("model.entity")
+            .setMapper("service.mapper")
+            .setXml("mapper");
         //.setModuleName(moduleName);
     }
 
     /**
      * self-definition config
      */
-    static InjectionConfig injectionConfigBuilder(String submoduleName) {
+    static InjectionConfig injectionConfigBuilder() {
         return new InjectionConfig() {
             @Override
             public void initMap() {
@@ -112,8 +110,7 @@ public class CodeGenerator {
                 @Override
                 public String outputFile(TableInfo tableInfo) {
                     // 自定义输入文件名称
-                    return path + "mapper/" + submoduleName
-                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
+                    return path + ".mapper/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
                 }
             });
         }});
@@ -122,7 +119,7 @@ public class CodeGenerator {
     /**
      * StrategyConfig 策略配置
      */
-    static StrategyConfig strategyConfigBuilder(@NotNull String tableName, @NotNull String tablePrefix) {
+    static StrategyConfig strategyConfigBuilder(String tableName, String tablePrefix) {
 
         return new StrategyConfig()
             .setNaming(NamingStrategy.underline_to_camel)
@@ -131,7 +128,7 @@ public class CodeGenerator {
             .setEntityLombokModel(true)
             .setRestControllerStyle(true)
             //指定实体的基类，生成的entity就会实现Serializable接口
-            .setSuperEntityClass("com.dongxin.common.model.BaseBusinessEntity")
+            .setSuperEntityClass("com.wangy.common.model.BaseEntity")
             //指定生成属性时，驼峰转连字符
             .setControllerMappingHyphenStyle(true)
             .setTablePrefix(Arrays.stream(tablePrefix.split(",")).map(s -> s.concat("_")).toArray(String[]::new))
@@ -153,17 +150,15 @@ public class CodeGenerator {
     /**
      * AutoGenerator
      *
-     * @param moduleName    模块名
-     * @param submoduleName 子模块名
      * @param tableName     表名，多表使用英文逗号（,）分隔； 如: t_order,sys_file,...,test_user
      * @param tablePrefix   表前缀名，多前缀使用英文逗号（,）分隔； 如：t,sys,...,test
      */
-    static void generate(String moduleName, String submoduleName, String tableName, String tablePrefix) {
+    static void generate( String tableName, String tablePrefix) {
         AutoGenerator mpg = new AutoGenerator();
         mpg.setGlobalConfig(globalConfigBuilder());
         mpg.setDataSource(dataSourceConfigBuilder());
-        mpg.setPackageInfo(packageConfigBuilder(moduleName, submoduleName));
-        mpg.setCfg(injectionConfigBuilder(submoduleName));
+        mpg.setPackageInfo(packageConfigBuilder());
+        mpg.setCfg(injectionConfigBuilder());
         mpg.setStrategy(strategyConfigBuilder(tableName, tablePrefix));
         // template
         mpg.setTemplate(new TemplateConfig().setXml(null));
@@ -173,15 +168,13 @@ public class CodeGenerator {
     }
 
     public static void main(String[] args) {
-        String moduleName = scanner("微服务名").replace("-", "");
-        String submoduleName = scanner("子模块名");
         String tableName = scanner("表名");
         String tablePrefix = scanner("表前缀");
         String authorInput = scanner("作者(不输入则使用“系统默认”)");
         if (!StringUtils.isBlank(authorInput)) {
             author = authorInput;
         }
-        generate(moduleName, submoduleName, tableName, tablePrefix);
+        generate(tableName, tablePrefix);
     }
 
 }

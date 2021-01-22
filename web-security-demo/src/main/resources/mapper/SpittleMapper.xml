@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangy.service.mapper.SpittleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wangy.model.entity.Spittle">
+        <id column="id" property="id" />
+        <result column="spitter_id" property="spitterId" />
+        <result column="message" property="message" />
+        <result column="time" property="time" />
+        <result column="latitude" property="latitude" />
+        <result column="longitude" property="longitude" />
+    </resultMap>
+
+</mapper>
