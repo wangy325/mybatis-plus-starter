@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2021-01-22
  */
 @RestController
-@RequestMapping("//spittle")
+@RequestMapping("/spittle")
 public class SpittleController {
 
 }
