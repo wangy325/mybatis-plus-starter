@@ -2,6 +2,8 @@ package com.wangy.config;
 
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 import org.mybatis.spring.annotation.MapperScan;
@@ -20,8 +22,8 @@ import javax.sql.DataSource;
 @MapperScan("com.wangy.service.mapper")
 public class MybatisPlusConfig {
 
-    @Autowired
-    DataSource hiKariDatasource;
+//    @Autowired
+//    HikariDataSource hiKariDatasource;
 
     /*@Bean
     public MybatisConfiguration configuration(){
@@ -29,12 +31,12 @@ public class MybatisPlusConfig {
         configuration.setCacheEnabled(true);
     }*/
 
-    @Bean
+    /*@Bean
     public MybatisSqlSessionFactoryBean sqlSessionFactory(){
        MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean =
            new MybatisSqlSessionFactoryBean();
        mybatisSqlSessionFactoryBean.setDataSource(hiKariDatasource);
        return  mybatisSqlSessionFactoryBean;
-    }
+    }*/
 
 }

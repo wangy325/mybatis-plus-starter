@@ -1,12 +1,14 @@
 package com.wangy.common;
 
 import com.wangy.common.enums.HttpStatus;
+import lombok.Data;
 
 /**
  * 基础响应
  *
  * @author wangy
  */
+@Data
 public class ReqResult<T> {
 
     private int code;
