@@ -1,4 +1,4 @@
-# this sql is used for mysql, some of the keywords are not common used.
+-- this sql is used for mysql, some of the keywords are not common used.
 
 CREATE DATABASE IF NOT EXISTS `spitter` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `spitter`;
