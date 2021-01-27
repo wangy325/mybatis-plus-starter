@@ -2,7 +2,7 @@ package com.wangy.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.wangy.common.ReqResult;
+import com.wangy.common.model.ReqResult;
 import com.wangy.model.entity.Spitter;
 import com.wangy.service.ISpitterService;
 import org.springframework.beans.factory.annotation.Autowired;

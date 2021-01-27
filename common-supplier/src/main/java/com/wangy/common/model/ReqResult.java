@@ -1,4 +1,4 @@
-package com.wangy.common;
+package com.wangy.common.model;
 
 import com.wangy.common.enums.HttpStatus;
 import lombok.Data;
