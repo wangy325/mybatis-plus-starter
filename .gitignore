@@ -12,5 +12,3 @@ target/
 .mvn/
 mvnw
 *.cmd
-
-readme.md
