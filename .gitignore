@@ -12,3 +12,5 @@ target/
 .mvn/
 mvnw
 *.cmd
+
+**/.project
