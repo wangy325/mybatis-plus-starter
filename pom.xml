@@ -17,8 +17,9 @@
     </modules>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springboot.version>2.2.6.RELEASE</springboot.version>
         <h2.version>1.4.200</h2.version>
         <mysql.verison>8.0.19</mysql.verison>

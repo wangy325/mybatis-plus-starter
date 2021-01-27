@@ -10,6 +10,7 @@ CREATE TABLE `spitter`(
                           `lastname` VARCHAR(30) NOT NULL,
                           `username` VARCHAR(30) NOT NULL,
                           `password` VARCHAR(30) NOT NULL,
+                          `deleted` TINYINT(2) NOT NULL DEFAULT 0,
                           PRIMARY KEY(`id`)
 ) COMMENT 'user info table';
 
@@ -21,6 +22,7 @@ CREATE TABLE `spittle`(
                           `time` TIMESTAMP NOT NULL,
                           `latitude` DOUBLE(3,3) DEFAULT 0,
                           `longitude` DOUBLE(3,3) DEFAULT 0,
+                          `deleted` TINYINT(2) NOT NULL DEFAULT 0,
                           PRIMARY KEY(`id`)
 ) COMMENT 'user spittle table';
 

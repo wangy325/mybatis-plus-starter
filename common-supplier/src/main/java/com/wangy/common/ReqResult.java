@@ -33,16 +33,16 @@ public class ReqResult<T> {
     }
 
 
-    public static <T> ReqResult<T> success() {
-        return ReqResult.success("操作成功");
+    public static <T> ReqResult<T> ok() {
+        return ReqResult.ok("操作成功");
     }
 
-    public static <T> ReqResult<T> success(T data) {
-        return ReqResult.success("操作成功", data);
+    public static <T> ReqResult<T> ok(T data) {
+        return ReqResult.ok("操作成功", data);
     }
 
-    public static <T> ReqResult<T> success(String msg) {
-        return ReqResult.success(msg, null);
+    public static <T> ReqResult<T> ok(String msg) {
+        return ReqResult.ok(msg, null);
     }
 
     /**
@@ -52,7 +52,7 @@ public class ReqResult<T> {
      * @param data 数据对象
      * @return 成功消息
      */
-    public static <T> ReqResult<T> success(String msg, T data) {
+    public static <T> ReqResult<T> ok(String msg, T data) {
         return new ReqResult<T>(HttpStatus.OK.getCode(), msg, data);
     }
 
@@ -61,8 +61,8 @@ public class ReqResult<T> {
      *
      * @return
      */
-    public static <T> ReqResult<T> error() {
-        return ReqResult.error("操作失败");
+    public static <T> ReqResult<T> fail() {
+        return ReqResult.fail("操作失败");
     }
 
     /**
@@ -71,8 +71,8 @@ public class ReqResult<T> {
      * @param msg 返回内容
      * @return 警告消息
      */
-    public static <T> ReqResult<T> error(String msg) {
-        return ReqResult.error(msg, null);
+    public static <T> ReqResult<T> fail(String msg) {
+        return ReqResult.fail(msg, null);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ReqResult<T> {
      * @param data 数据对象
      * @return 警告消息
      */
-    public static <T> ReqResult<T> error(String msg, T data) {
+    public static <T> ReqResult<T> fail(String msg, T data) {
         return new ReqResult<T>(HttpStatus.Internal_Server_Error.getCode(), msg, data);
     }
 
@@ -93,7 +93,7 @@ public class ReqResult<T> {
      * @param msg  返回内容
      * @return 警告消息
      */
-    public static <T> ReqResult<T> error(int code, String msg) {
+    public static <T> ReqResult<T> fail(int code, String msg) {
         return new ReqResult<>(code, msg, null);
     }
 }

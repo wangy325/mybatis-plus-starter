@@ -8,6 +8,7 @@ CREATE TABLE `spitter`
     `lastName`  VARCHAR(30) NOT NULL,
     `username`  VARCHAR(30) NOT NULL,
     `password`  VARCHAR(30) NOT NULL,
+    `deleted`   TINYINT(2)  NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 
@@ -20,6 +21,7 @@ CREATE TABLE `spittle`
     `time`      TIMESTAMP    NOT NULL,
     `latitude`  DOUBLE DEFAULT 0,
     `longitude` DOUBLE DEFAULT 0,
+    `deleted`   TINYINT(2)    NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 

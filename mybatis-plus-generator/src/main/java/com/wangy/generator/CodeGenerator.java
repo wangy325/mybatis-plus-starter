@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.google.common.base.Strings;
+import com.wangy.common.model.BaseEntity;
 
 
 import java.util.ArrayList;
@@ -129,7 +130,7 @@ public class CodeGenerator {
             .setEntityLombokModel(true)
             .setRestControllerStyle(true)
             //指定实体的基类，生成的entity就会实现Serializable接口
-            .setSuperEntityClass("com.wangy.common.model.BaseEntity")
+            .setSuperEntityClass(BaseEntity.class)
             //指定生成属性时，驼峰转连字符
             .setControllerMappingHyphenStyle(true)
             .setTablePrefix(Arrays.stream(tablePrefix.split(",")).map(s -> s.concat("_")).toArray(String[]::new))

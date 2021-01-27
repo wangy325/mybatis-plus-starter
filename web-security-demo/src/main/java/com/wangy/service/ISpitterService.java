@@ -13,6 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISpitterService extends IService<Spitter> {
 
-    Spitter selectById();
 
 }

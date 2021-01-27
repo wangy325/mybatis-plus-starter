@@ -1,5 +1,6 @@
 package com.wangy.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.wangy.common.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -36,6 +37,9 @@ public class Spittle extends BaseEntity {
     private Double latitude;
 
     private Double longitude;
+
+    @TableLogic
+    private Integer deleted;
 
 
 }

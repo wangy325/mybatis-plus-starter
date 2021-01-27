@@ -17,8 +17,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class SpitterServiceImpl extends ServiceImpl<SpitterMapper, Spitter> implements ISpitterService {
 
-    @Override
-    public Spitter selectById() {
-        return null;
-    }
 }
