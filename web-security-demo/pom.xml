@@ -80,7 +80,7 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
-					<!--在打包的时候先去掉所有的properties文件-->
+					<!--在打包的时候先忽略所有properties文件-->
 					<exclude>application*.properties</exclude>
 				</excludes>
 			</resource>

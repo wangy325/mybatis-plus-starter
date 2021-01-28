@@ -3,10 +3,12 @@ package com.wangy.controller;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wangy.common.model.ReqResult;
+import com.wangy.model.dto.SpitterDTO;
 import com.wangy.model.entity.Spitter;
 import com.wangy.service.ISpitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 
 /**
  * <p>
@@ -20,8 +22,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/spitter")
 public class SpitterController {
 
-    @Autowired
+    final
     ISpitterService spitterService;
+
+    public SpitterController(ISpitterService spitterService) {
+        this.spitterService = spitterService;
+    }
 
     /**
      * get spitter info by id
@@ -52,6 +58,12 @@ public class SpitterController {
     @PostMapping("/resume/{id}")
     public ReqResult<?> resumeSpitterById(@PathVariable int id) {
 //        boolean b = spitterService.update(new UpdateWrapper<Spitter>().set("deleted", 1).eq("id", id));
+        return ReqResult.ok();
+    }
+
+    @PostMapping("/update")
+    public ReqResult<?> updateSpitterById(@RequestBody SpitterDTO spitterDTO ){
+        spitterService.updateFromDtoById(spitterDTO);
         return ReqResult.ok();
     }
 }

@@ -53,7 +53,7 @@ public class ReqResult<T> {
      * @return 成功消息
      */
     public static <T> ReqResult<T> ok(String msg, T data) {
-        return new ReqResult<T>(HttpStatus.OK.getCode(), msg, data);
+        return new ReqResult<>(HttpStatus.OK.getCode(), msg, data);
     }
 
     /**
@@ -83,7 +83,7 @@ public class ReqResult<T> {
      * @return 警告消息
      */
     public static <T> ReqResult<T> fail(String msg, T data) {
-        return new ReqResult<T>(HttpStatus.Internal_Server_Error.getCode(), msg, data);
+        return new ReqResult<>(HttpStatus.Internal_Server_Error.getCode(), msg, data);
     }
 
     /**
@@ -95,5 +95,15 @@ public class ReqResult<T> {
      */
     public static <T> ReqResult<T> fail(int code, String msg) {
         return new ReqResult<>(code, msg, null);
+    }
+
+    private static class NullObject{
+        private static final NullObject NULL_OBJECT = new NullObject();
+
+        private NullObject(){};
+
+        static NullObject of(){
+            return NULL_OBJECT;
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.wangy.service;
 
+import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
+import com.wangy.model.dto.SpitterDTO;
 import com.wangy.model.entity.Spitter;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,5 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISpitterService extends IService<Spitter> {
 
-
+    /**
+     * update spitter info by spitterDTO
+     *
+     * @param dto
+     * @return
+     */
+    boolean updateFromDtoById(SpitterDTO dto);
 }
