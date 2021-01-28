@@ -5,23 +5,22 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 /**
  * @author wangy
  * @date 2021-1-28 16:10
  */
 @SpringBootTest
-@ActiveProfiles("h2")
-@PropertySource("classpath:**/application-h2.properties")
+@TestPropertySource("classpath:application-test.properties")
 public class SpitterServiceImplTest {
 
     @Autowired
     private ISpitterService spitterService;
 
     @Test
-    public void  UpdateFromDtoByIdTest(){
+    public void UpdateFromDtoByIdTest() {
         SpitterDTO dto = SpitterDTO.builder().build();
         dto.setId(1);
         dto.setFirstname("STEPHEN");

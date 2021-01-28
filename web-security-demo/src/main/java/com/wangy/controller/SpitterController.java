@@ -6,8 +6,11 @@ import com.wangy.common.model.ReqResult;
 import com.wangy.model.dto.SpitterDTO;
 import com.wangy.model.entity.Spitter;
 import com.wangy.service.ISpitterService;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -20,14 +23,11 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/spitter")
+@Setter
 public class SpitterController {
 
-    final
+    @Resource
     ISpitterService spitterService;
-
-    public SpitterController(ISpitterService spitterService) {
-        this.spitterService = spitterService;
-    }
 
     /**
      * get spitter info by id
