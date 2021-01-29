@@ -65,8 +65,9 @@ public class Entity{
 
 TODOS:
 
-- [ ] 使用mybatis-plus提供的分页插件 
-- [ ] 在mybatis-plus框架中使用自定义查询
+- [x] 使用mybatis-plus提供的分页插件 
+- [x] 在mybatis-plus框架中使用自定义查询
+- [ ] **使用事务**
 - [ ] 完成ibatis分支下的原生mybatis配置
 - [ ] 引入日志系统（使用logback）
 - [ ] 统一异常处理
