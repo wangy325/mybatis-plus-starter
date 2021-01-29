@@ -1,5 +1,6 @@
 package com.wangy.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wangy.model.entity.Spittle;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISpittleService extends IService<Spittle> {
 
+    /**
+     *
+     * @param page
+     * @return
+     */
+    IPage<Spittle> pageQuerySpittleByUsername(IPage<Spittle> page);
 }

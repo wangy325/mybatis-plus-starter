@@ -1,5 +1,6 @@
 package com.wangy.service.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wangy.model.entity.Spittle;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -13,4 +14,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SpittleMapper extends BaseMapper<Spittle> {
 
+
+    IPage<Spittle> pageQuerySpittleByUsername(IPage<Spittle> page);
 }

@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wangy</groupId>
-    <artifactId>backend-demo</artifactId>
+    <artifactId>mybatis-plus-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backend-demo</name>
+    <name>mybatis-plus-starter</name>
     <description>mybatis plus demo project</description>
     <packaging>pom</packaging>
 
@@ -49,6 +49,12 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus.version}</version>
+                <scope>compile</scope>
             </dependency>
 
             <dependency>

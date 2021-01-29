@@ -8,6 +8,7 @@ import com.wangy.model.vo.SpitterVO;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -22,6 +23,7 @@ public class SpitterServiceImplTest extends WebSecurityDemoApplicationTests {
 
 
     @Test
+    @Transactional(rollbackFor = Exception.class)
     public void updateFromDtoByIdTest() {
         SpitterDTO dto = SpitterDTO.builder().build();
         dto.setId(1);
