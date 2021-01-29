@@ -92,6 +92,8 @@
 				<includes>
 					<include>application.properties</include>
 					<include>application-${activatedProperties}.properties</include>
+					<!--<include>*.xml</include>
+					<include>mapper/*.xml</include>-->
 				</includes>
 			</resource>
 		</resources>

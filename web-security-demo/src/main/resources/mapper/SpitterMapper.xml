@@ -11,4 +11,8 @@
         <result column="password" property="password" />
     </resultMap>
 
+    <select id="queryByWrapper" resultType="com.wangy.model.vo.SpitterVO">
+        select * from spitter ${ew.customSqlSegment}
+    </select>
+
 </mapper>
