@@ -38,7 +38,7 @@ public class SpitterServiceImpl extends ServiceImpl<SpitterMapper, Spitter> impl
     @Override
     public SpitterVO queryByUsername(String username) {
         // 使用QueryWrapper列名只能使用硬编码
-        Spitter spitter = getOne(Wrappers.query(new Spitter()).eq("column", username));
+        Spitter spitter = getOne(Wrappers.query(new Spitter()).eq("username", username));
 
         // 使用lambdaQuery可以减少硬编码
         spitter = getOne(Wrappers.lambdaQuery(Spitter.class).eq(Spitter::getUsername, username));

@@ -1,15 +1,22 @@
 package com.wangy.model.dto;
 
+import com.wangy.common.model.BaseEntity;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author wangy
  * @date 2021-1-28 15:31
  */
+
 @Data
 @Builder
-public class SpitterDTO {
+@EqualsAndHashCode(callSuper = true)
+public class SpitterDTO extends BaseEntity {
 
     private Integer id;
 
@@ -20,4 +27,8 @@ public class SpitterDTO {
     private String username;
 
     private String password;
+
+    @Builder.Default
+    private List<SpittleDTO> spittles = new ArrayList<>();
 }
+

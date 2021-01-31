@@ -19,8 +19,7 @@ import java.util.Objects;
  * @date 2021-1-28 16:10
  */
 @SpringBootTest
-public class SpitterServiceImplTest extends WebSecurityDemoApplicationTests {
-
+public class SpitterServiceTest extends WebSecurityDemoApplicationTests {
 
     @Test
     @Transactional(rollbackFor = Exception.class)
@@ -83,19 +82,5 @@ public class SpitterServiceImplTest extends WebSecurityDemoApplicationTests {
             }
         }
         Assert.assertTrue(breaks < size && breaks > 0);
-    }
-
-    private <T> void assertSubMap(T vo, T qr) {
-        // T -> class -> Fields,
-        Field[] fields = vo.getClass().getDeclaredFields();
-        try {
-            for (Field field : fields) {
-                field.setAccessible(true);
-                if (Objects.nonNull(field.get(vo)))
-                    Assert.assertEquals(field.get(vo), field.get(qr));
-            }
-        } catch (Exception e) {
-            // do nothing
-        }
     }
 }

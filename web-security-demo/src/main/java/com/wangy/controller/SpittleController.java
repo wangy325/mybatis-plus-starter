@@ -1,9 +1,18 @@
 package com.wangy.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.wangy.common.model.PageDomain;
+import com.wangy.common.model.ReqResult;
+import com.wangy.model.dto.SpittleDTO;
+import com.wangy.model.vo.SpittleVO;
+import com.wangy.service.ISpittleService;
+import lombok.Setter;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -15,6 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/spittle")
+@Setter
 public class SpittleController {
 
+    @Resource
+    private ISpittleService spittleService;
+
+    @GetMapping("/user/spittles")
+    public ReqResult<PageDomain<SpittleVO>> getUserSpittlesPage(SpittleDTO spittleDTO) {
+        IPage<SpittleVO> page = spittleService.pageQuerySpittleBySpitterId(spittleDTO);
+        return ReqResult.ok(new PageDomain<>(page));
+    }
 }

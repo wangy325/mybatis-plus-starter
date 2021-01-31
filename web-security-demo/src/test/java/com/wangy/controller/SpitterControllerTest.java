@@ -52,5 +52,7 @@ public class SpitterControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data")
                 .value(objectMapper.convertValue(spitter, HashMap.class)));
+
+        Mockito.verify(spitterService, Mockito.times(1));
     }
 }

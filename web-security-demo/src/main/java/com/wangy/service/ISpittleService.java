@@ -1,8 +1,10 @@
 package com.wangy.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.wangy.model.entity.Spittle;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.wangy.model.dto.SpittleDTO;
+import com.wangy.model.entity.Spittle;
+import com.wangy.model.vo.SpittleVO;
 
 /**
  * <p>
@@ -15,9 +17,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ISpittleService extends IService<Spittle> {
 
     /**
+     * 分页查询用户spittles
      *
-     * @param page
-     * @return
+     * @param spittleDto required property: {@link SpittleDTO#spitterId}
+     * @return IPage
      */
-    IPage<Spittle> pageQuerySpittleByUsername(IPage<Spittle> page);
+    IPage<SpittleVO> pageQuerySpittleBySpitterId(SpittleDTO spittleDto);
 }

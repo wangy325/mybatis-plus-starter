@@ -1,8 +1,12 @@
 package com.wangy.service.mapper;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.wangy.model.entity.Spittle;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.wangy.model.dto.SpittleDTO;
+import com.wangy.model.entity.Spittle;
+import com.wangy.model.vo.SpittleVO;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -15,5 +19,14 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface SpittleMapper extends BaseMapper<Spittle> {
 
 
-    IPage<Spittle> pageQuerySpittleByUsername(IPage<Spittle> page);
+    /**
+     * 根据用户id分页查询spittles
+     *
+     * @param page       IPage
+     * @param spittleDTO spittleDTO
+     * @return IPage
+     * @see com.wangy.service.ISpittleService#pageQuerySpittleBySpitterId(IPage, SpittleDTO)
+     */
+    @Select("select * from spittle where spittle.spitter_id = #{dto.spitterId}")
+    IPage<SpittleVO> pageQuerySpittleBySpitterId(IPage<SpittleVO> page, @Param("dto") SpittleDTO spittleDTO);
 }

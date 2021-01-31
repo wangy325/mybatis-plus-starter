@@ -12,4 +12,8 @@
         <result column="longitude" property="longitude" />
     </resultMap>
 
+    <!--<select id="pageQuerySpittleByUsername" resultMap="BaseResultMap">
+        select * from spittle where spittle.spitter_id = #{spitterId}
+    </select>-->
+
 </mapper>
