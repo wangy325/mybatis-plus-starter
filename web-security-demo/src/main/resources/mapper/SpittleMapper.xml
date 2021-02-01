@@ -4,16 +4,29 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.wangy.model.entity.Spittle">
-        <id column="id" property="id" />
-        <result column="spitter_id" property="spitterId" />
-        <result column="message" property="message" />
-        <result column="time" property="time" />
-        <result column="latitude" property="latitude" />
-        <result column="longitude" property="longitude" />
+        <id column="id" property="id"/>
+        <result column="spitter_id" property="spitterId"/>
+        <result column="message" property="message"/>
+        <result column="time" property="time"/>
+        <result column="latitude" property="latitude"/>
+        <result column="longitude" property="longitude"/>
     </resultMap>
 
-    <!--<select id="pageQuerySpittleByUsername" resultMap="BaseResultMap">
-        select * from spittle where spittle.spitter_id = #{spitterId}
+    <resultMap id="spittleVOMap" type="com.wangy.model.vo.SpittleVO">
+        <id column="id" property="id"/>
+        <result column="spitter_id" property="spitterId"/>
+        <result column="message" property="message"/>
+        <result column="time" property="time"/>
+        <result column="latitude" property="latitude"/>
+        <result column="longitude" property="longitude"/>
+    </resultMap>
+
+    <!--<select id="pageQuerySpittleBySpitterId" resultMap="spittleVOMap">
+        select id, spitter_id, message, DATE_FORMAT(time, '%Y-%m-%d %H:%i:%S'),latitude, longitude from spittle where spittle.spitter_id = #{dto.spitterId}
     </select>-->
+
+    <select id="pageQuerySpittleBySpitterId" resultMap="spittleVOMap">
+        select id, spitter_id, message, time, latitude, longitude from spittle where spittle.spitter_id = #{dto.spitterId}
+    </select>
 
 </mapper>

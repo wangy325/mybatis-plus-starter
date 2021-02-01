@@ -48,8 +48,8 @@ public class SpitterControllerTest {
         spitterController.setSpitterService(spitterService);
         MockMvc mockMvc = standaloneSetup(spitterController).build();
         mockMvc.perform(get("/spitter/1"))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.data")
                 .value(objectMapper.convertValue(spitter, HashMap.class)));
 

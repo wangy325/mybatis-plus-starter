@@ -1,5 +1,11 @@
 package com.wangy.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.NumberSerializers;
+import com.wangy.common.model.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +20,9 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @AllArgsConstructor
-public class SpittleVO {
+//@JsonPropertyOrder({"id","spitterId", "message", "time", "latitude","longitude"})
+public class SpittleVO{
+
     private Long id;
 
     /**
@@ -24,6 +32,7 @@ public class SpittleVO {
 
     private String message;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING )
     private LocalDateTime time;
 
     private Double latitude;

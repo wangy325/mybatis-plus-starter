@@ -3,10 +3,16 @@ package com.wangy.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.NumberSerializers;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.wangy.common.model.PageDomain;
 import com.wangy.model.dto.SpittleDTO;
 import com.wangy.model.vo.SpittleVO;
 import com.wangy.service.ISpittleService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,6 +28,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -32,6 +40,7 @@ import java.util.*;
 @SpringBootTest
 public class SpittleControllerTest {
 
+    static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     static ISpittleService spittleService;
     static SpittleController spittleController;
     static ObjectMapper objectMapper;
@@ -41,6 +50,11 @@ public class SpittleControllerTest {
         spittleService = Mockito.mock(ISpittleService.class);
         spittleController = new SpittleController();
         objectMapper = new ObjectMapper();
+        // 配置jackson对LocalDateTime的序列化/反序列化规则
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
+        objectMapper.registerModule(javaTimeModule);
     }
 
     @Test
@@ -48,10 +62,12 @@ public class SpittleControllerTest {
         SpittleVO sample = SpittleVO.builder().build();
         sample.setSpitterId(4);
         sample.setMessage("sixth man");
-        sample.setTime(LocalDateTime.of(2012, 6, 9, 22, 20, 0));
+        sample.setTime(LocalDateTime.parse("2012-06-09 22:20:00", DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
         sample.setLatitude(0.0d);
         sample.setLongitude(0.0d);
-        sample.setId(1L);
+        sample.setId(21474836470L);
+        // for debug
+//        String s = objectMapper.writeValueAsString(sample);
 
         SpittleDTO dto = new SpittleDTO();
         dto.setSpitterId(sample.getSpitterId());
@@ -63,13 +79,12 @@ public class SpittleControllerTest {
         page.setCurrent(dto.getCurrentPage());
         page.setSize(dto.getPageSize());
         page.setTotal(4);
-        // if pages set by itself ?
-        page.setPages(page.getPages());
         page.setRecords(new ArrayList<SpittleVO>() {{
             add(sample);
         }});
         PageDomain<SpittleVO> pageDomain = new PageDomain<>(page);
 
+        // 此处必须使用类类型作为参数
         Mockito.when(spittleService.pageQuerySpittleBySpitterId(Mockito.any(SpittleDTO.class))).thenReturn(page);
 
         spittleController.setSpittleService(spittleService);
@@ -81,21 +96,29 @@ public class SpittleControllerTest {
                 paramMap.put(entry.getKey(), Collections.singletonList(String.valueOf(entry.getValue())));
             }
         }
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/spittle/user/spittles")
-            .queryParams(paramMap)
+        mockMvc.perform(MockMvcRequestBuilders.get("/spittle/user/spittles")
+                .queryParams(paramMap)
         )
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.currentPage").value(pageDomain.getCurrentPage()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize").value(pageDomain.getPageSize()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.pages").value(pageDomain.getPages()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.total").value(pageDomain.getTotal()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.records").value(objectMapper.convertValue(sample, HashMap.class)))
-            ;
-
-
-        Mockito.verify(spittleController, Mockito.times(1));
-
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.currentPage")
+                        .value(pageDomain.getCurrentPage()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize")
+                        .value(pageDomain.getPageSize()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pages")
+                        .value(pageDomain.getPages()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.total").
+                        value(pageDomain.getTotal()))
+                // get element from json array
+                // see https://github.com/json-path/JsonPath
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0]")
+                        // 报错原因 ：double和integer的问题
+                        // 长整型(long)数据在json序列化之后再反序列化，
+                        // Java类型将变为int(如果数据没有超过int的最大值范围)
+                        // 超过范围为没有问题
+                        .value(objectMapper.convertValue(sample, HashMap.class)))
+        ;
+        Mockito.verify(spittleService, Mockito.times(1));
     }
 
 }

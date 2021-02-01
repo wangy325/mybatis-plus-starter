@@ -21,12 +21,15 @@ public interface SpittleMapper extends BaseMapper<Spittle> {
 
     /**
      * 根据用户id分页查询spittles
+     * <pre>
+     *     &#64;Select("select * from spittle where spittle.spitter_id = #{dto.spitterId}")
+     * </pre>
      *
      * @param page       IPage
      * @param spittleDTO spittleDTO
      * @return IPage
      * @see com.wangy.service.ISpittleService#pageQuerySpittleBySpitterId(IPage, SpittleDTO)
      */
-    @Select("select * from spittle where spittle.spitter_id = #{dto.spitterId}")
+
     IPage<SpittleVO> pageQuerySpittleBySpitterId(IPage<SpittleVO> page, @Param("dto") SpittleDTO spittleDTO);
 }

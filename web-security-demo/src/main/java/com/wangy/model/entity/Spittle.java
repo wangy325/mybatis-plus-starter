@@ -1,10 +1,13 @@
 package com.wangy.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wangy.common.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -39,6 +42,7 @@ public class Spittle extends BaseEntity {
     private Double longitude;
 
     @TableLogic
+    @JsonIgnore
     private Integer deleted;
 
 
