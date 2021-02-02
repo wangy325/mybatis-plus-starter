@@ -6,6 +6,7 @@ import com.wangy.WebSecurityDemoApplicationTests;
 import com.wangy.model.dto.SpittleDTO;
 import com.wangy.model.vo.SpittleVO;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -20,16 +21,20 @@ import java.util.List;
 @SpringBootTest
 public class SpittleServiceTest extends WebSecurityDemoApplicationTests {
 
-    @Test
-    public void pageQuerySpittleTest() {
-        SpittleVO sample = SpittleVO.builder().build();
+    static SpittleVO sample = SpittleVO.builder().build();
+    static SpittleDTO dto = new SpittleDTO();
+
+    @BeforeAll
+    static void init(){
         sample.setSpitterId(4);
         sample.setMessage("sixth man");
-        sample.setTime(LocalDateTime.of(2012, 6, 9, 22, 20, 0));
+        sample.setTime(LocalDateTime.parse("2012-06-09T22:20:00"));
         sample.setLatitude(0.0d);
         sample.setLongitude(0.0d);
+    }
 
-        SpittleDTO dto = new SpittleDTO();
+    @Test
+    public void pageQuerySpittleTest() {
         dto.setSpitterId(4);
         dto.setCurrentPage(1);
         dto.setPageSize(1);
@@ -40,5 +45,20 @@ public class SpittleServiceTest extends WebSecurityDemoApplicationTests {
         // items queried by pagination
         Assert.assertEquals(voList.size(), 1);
         assertSubMap(sample, voList.get(0));
+    }
+
+    @Test
+    public void pageQuerySpittlesByTimeLineTest(){
+//        dto.setSpitterId(4);
+        dto.setLeftTime(LocalDateTime.parse("2012-06-09T00:00:00.000"));
+        dto.setRightTime(LocalDateTime.parse("2012-06-09T23:59:59.999"));
+        dto.setCurrentPage(1);
+        dto.setPageSize(10);
+
+        IPage<SpittleVO> page = spittleService.pageQuerySpittlesByTimeLine(dto);
+        List<SpittleVO> spittles = page.getRecords();
+
+        Assert.assertEquals(spittles.size(), 5);
+        assertContains(spittles, sample);
     }
 }

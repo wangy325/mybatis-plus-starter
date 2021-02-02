@@ -35,4 +35,16 @@ public class SpittleController {
         IPage<SpittleVO> page = spittleService.pageQuerySpittleBySpitterId(spittleDTO);
         return ReqResult.ok(new PageDomain<>(page));
     }
+
+    /**
+     * TODO: 参数校验
+     *
+     * @param spittleDTO
+     * @return
+     */
+    @GetMapping("/range/spittles")
+    public ReqResult<PageDomain<SpittleVO>> getSpittlesTimeLine(SpittleDTO spittleDTO) {
+        IPage<SpittleVO> page = spittleService.pageQuerySpittlesByTimeLine(spittleDTO);
+        return ReqResult.ok(new PageDomain<>(page));
+    }
 }

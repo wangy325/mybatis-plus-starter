@@ -29,6 +29,6 @@ public class SpittleDTO extends BaseEntity {
 
     private LocalDateTime time;
 
-    public SpittleDTO() {
-    }
+    private LocalDateTime leftTime;
+    private LocalDateTime rightTime;
 }

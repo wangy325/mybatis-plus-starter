@@ -38,4 +38,11 @@ public class SpittleServiceImpl extends ServiceImpl<SpittleMapper, Spittle> impl
         spittleMapper.pageQuerySpittleBySpitterId(page, spittleDTO);
         return page;
     }
+
+    @Override
+    public IPage<SpittleVO> pageQuerySpittlesByTimeLine(SpittleDTO spittleDTO) {
+        Page<SpittleVO> page = new Page<>(spittleDTO.getCurrentPage(), spittleDTO.getPageSize());
+        spittleMapper.pageQuerySpittlesByTimeLine(page, spittleDTO);
+        return page;
+    }
 }

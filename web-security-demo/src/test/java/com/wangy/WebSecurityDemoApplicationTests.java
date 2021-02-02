@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Objects;
 
 @SpringBootTest
@@ -36,6 +37,30 @@ public class WebSecurityDemoApplicationTests {
         } catch (Exception e) {
             // do nothing
         }
+    }
+
+    protected  <T> void assertContains(List<T> rl, T vo) {
+        Field[] fields = vo.getClass().getDeclaredFields();
+        int size = rl.size();
+        int breaks = 0;
+
+        for (T t : rl) {
+            try {
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    Object o = field.get(vo);
+                    if (Objects.nonNull(o)) {
+                        if (!o.equals(field.get(t))) {
+                            breaks++;
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // do nothing
+            }
+        }
+        Assert.assertTrue(breaks < size && breaks > 0);
     }
 
 }

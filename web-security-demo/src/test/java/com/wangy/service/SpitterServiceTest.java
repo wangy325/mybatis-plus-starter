@@ -10,9 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author wangy
@@ -57,30 +55,6 @@ public class SpitterServiceTest extends WebSecurityDemoApplicationTests {
                 .or()
                 .like(Spitter::getLastname, keyWord));
         Assert.assertEquals(rl.size(), 2);
-        contains(rl, vo);
-    }
-
-    private <T> void contains(List<T> rl, T vo) {
-        Field[] fields = vo.getClass().getDeclaredFields();
-        int size = rl.size();
-        int breaks = 0;
-
-        for (T t : rl) {
-            try {
-                for (Field field : fields) {
-                    field.setAccessible(true);
-                    Object o = field.get(vo);
-                    if (Objects.nonNull(o)) {
-                        if (!o.equals(field.get(t))) {
-                            breaks++;
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                // do nothing
-            }
-        }
-        Assert.assertTrue(breaks < size && breaks > 0);
+        assertContains(rl, vo);
     }
 }

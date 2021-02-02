@@ -2,6 +2,7 @@ package com.wangy.service.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wangy.model.dto.SpittleDTO;
 import com.wangy.model.entity.Spittle;
 import com.wangy.model.vo.SpittleVO;
@@ -28,8 +29,18 @@ public interface SpittleMapper extends BaseMapper<Spittle> {
      * @param page       IPage
      * @param spittleDTO spittleDTO
      * @return IPage
-     * @see com.wangy.service.ISpittleService#pageQuerySpittleBySpitterId(IPage, SpittleDTO)
+     * @see com.wangy.service.ISpittleService#pageQuerySpittleBySpitterId(SpittleDTO)
      */
 
     IPage<SpittleVO> pageQuerySpittleBySpitterId(IPage<SpittleVO> page, @Param("dto") SpittleDTO spittleDTO);
+
+    /**
+     * 分页查询某个时间段的spittles
+     *
+     * @param page       IPage
+     * @param spittleDTO spittleDTO
+     * @return IPage page
+     * @see com.wangy.service.ISpittleService#pageQuerySpittlesByTimeLine(SpittleDTO)
+     */
+    IPage<SpittleVO> pageQuerySpittlesByTimeLine(Page<SpittleVO> page, @Param("dto") SpittleDTO spittleDTO);
 }

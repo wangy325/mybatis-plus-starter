@@ -26,7 +26,27 @@
     </select>-->
 
     <select id="pageQuerySpittleBySpitterId" resultMap="spittleVOMap">
-        select id, spitter_id, message, time, latitude, longitude from spittle where spittle.spitter_id = #{dto.spitterId}
+        select *
+        from spittle
+        where spittle.spitter_id = #{dto.spitterId}
+    </select>
+
+    <select id="pageQuerySpittlesByTimeLine" resultMap="spittleVOMap">
+        select * from spittle
+        <where>
+            <if test="dto.spitterId != null and dto.spitterId != ''">
+                spitter_id = #{dto.spitterId}
+            </if>
+            <choose>
+                <when test="dto.rightTime !=null">
+                    and time between #{dto.leftTime} and #{dto.rightTime}
+                </when>
+                <otherwise>
+                    and time between #{dto.leftTime} and now()
+                </otherwise>
+            </choose>
+        </where>
+        order by time
     </select>
 
 </mapper>
