@@ -70,7 +70,7 @@ TODOS:
 - [x] [事务已自动配置](web-security-demo/src/main/java/com/wangy/config/MybatisPlusConfig.java)
 - [ ] 完成ibatis分支下的原生mybatis配置
 - [ ] 引入日志系统（使用logback）
-- [ ] 统一异常处理
+- [x] 统一异常处理
 - [ ] 引入JWT统一认证
 
 - [ ] 引入SpringSecurity
