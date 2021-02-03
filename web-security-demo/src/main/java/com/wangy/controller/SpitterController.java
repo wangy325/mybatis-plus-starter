@@ -56,6 +56,7 @@ public class SpitterController {
      * where clause. This is the philosophy of <b>Logical Delete</b> in mybatis-plus.
      */
     @PostMapping("/resume/{id}")
+    @Deprecated
     public ReqResult<?> resumeSpitterById(@PathVariable int id) {
 //        boolean b = spitterService.update(new UpdateWrapper<Spitter>().set("deleted", 1).eq("id", id));
         return ReqResult.ok();

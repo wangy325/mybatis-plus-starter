@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -29,6 +30,7 @@ public class SpittleDTO extends BaseEntity {
 
     private LocalDateTime time;
 
+    @NotNull
     private LocalDateTime leftTime;
     private LocalDateTime rightTime;
 }

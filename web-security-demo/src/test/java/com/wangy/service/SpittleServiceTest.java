@@ -1,7 +1,6 @@
 package com.wangy.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wangy.WebSecurityDemoApplicationTests;
 import com.wangy.model.dto.SpittleDTO;
 import com.wangy.model.vo.SpittleVO;
