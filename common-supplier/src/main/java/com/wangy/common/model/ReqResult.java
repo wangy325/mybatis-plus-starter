@@ -96,14 +96,4 @@ public class ReqResult<T> {
     public static <T> ReqResult<T> fail(int code, String msg) {
         return new ReqResult<>(code, msg, null);
     }
-
-    private static class NullObject{
-        private static final NullObject NULL_OBJECT = new NullObject();
-
-        private NullObject(){};
-
-        static NullObject of(){
-            return NULL_OBJECT;
-        }
-    }
 }

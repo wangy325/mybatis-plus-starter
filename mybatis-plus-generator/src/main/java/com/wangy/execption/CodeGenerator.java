@@ -1,4 +1,4 @@
-package com.wangy.generator;
+package com.wangy.execption;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.FieldFill;
