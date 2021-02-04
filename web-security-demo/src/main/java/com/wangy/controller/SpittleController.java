@@ -37,12 +37,6 @@ public class SpittleController {
         return ReqResult.ok(new PageDomain<>(page));
     }
 
-    /**
-     * TODO: 参数校验
-     *
-     * @param spittleDTO
-     * @return
-     */
     @GetMapping("/range/spittles")
     public ReqResult<PageDomain<SpittleVO>> getSpittlesTimeLinePage(@Valid SpittleDTO spittleDTO) {
         IPage<SpittleVO> page = spittleService.pageQuerySpittlesByTimeLine(spittleDTO);

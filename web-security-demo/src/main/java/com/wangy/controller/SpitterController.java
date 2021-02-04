@@ -2,15 +2,18 @@ package com.wangy.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
+import com.wangy.generator.SpitterException;
 import com.wangy.model.dto.SpitterDTO;
 import com.wangy.model.entity.Spitter;
 import com.wangy.service.ISpitterService;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+
+import static com.wangy.common.constant.UniversalConstants.SHARP;
 
 
 /**
@@ -42,9 +45,19 @@ public class SpitterController {
      * should be logical remove -> update
      */
     @DeleteMapping("/delete/{id}")
-    public ReqResult<?> deleteSpitterById(@PathVariable int id) {
+    public ReqResult<?> deleteSpitterById(@PathVariable int id) throws NoSuchMethodException {
         boolean b = spitterService.removeById(id);
-        return b ? ReqResult.ok() : ReqResult.fail();
+        // a demo of how to use self-definition Exception
+        // do not throw exception in controller
+        if (!b) {
+            throw new SpitterException(
+                    getClass().getName() + SHARP + getClass().getDeclaredMethod("deleteSpitterById", int.class).getName(),
+                    new Object[]{id},
+                    ReqState.SERVER_INTERNAL_ERROR.getCode(),
+                    "对应id的资源不存在！"
+            );
+        }
+        return ReqResult.ok();
     }
 
     /**
@@ -63,7 +76,7 @@ public class SpitterController {
     }
 
     @PostMapping("/update")
-    public ReqResult<?> updateSpitterById(@RequestBody SpitterDTO spitterDTO ){
+    public ReqResult<?> updateSpitterById(@RequestBody SpitterDTO spitterDTO) {
         spitterService.updateFromDtoById(spitterDTO);
         return ReqResult.ok();
     }
