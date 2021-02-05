@@ -67,6 +67,7 @@ public class SpittleControllerTest {
         spittleService = Mockito.mock(ISpittleService.class);
         spittleController = new SpittleController();
         spittleController.setSpittleService(spittleService);
+
         // 配置jackson对LocalDateTime的序列化/反序列化规则
         /*objectMapper = new ObjectMapper();
         JavaTimeModule javaTimeModule = new JavaTimeModule();
@@ -92,10 +93,8 @@ public class SpittleControllerTest {
 
     @Test
     public void getUserSpittlesPageTest() throws Exception {
-
         // for debug
 //        String s = objectMapper.writeValueAsString(sample);
-
         dto.setSpitterId(sample.getSpitterId());
         dto.setCurrentPage(1);
         dto.setPageSize(1);
@@ -112,28 +111,32 @@ public class SpittleControllerTest {
             }
         }
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/spittle/user/spittles")
-                .queryParams(paramMap))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.currentPage")
-                        .value(pageDomain.getCurrentPage()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize")
-                        .value(pageDomain.getPageSize()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pages")
-                        .value(pageDomain.getPages()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.total")
-                        .value(pageDomain.getTotal()));
+            .queryParams(paramMap))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data.currentPage")
+                .value(pageDomain.getCurrentPage()))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize")
+                .value(pageDomain.getPageSize()))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data.pages")
+                .value(pageDomain.getPages()))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.data.total")
+                .value(pageDomain.getTotal()));
         // get element from json array
         // see https://github.com/json-path/JsonPath
         /* 报错原因 ：double和integer的问题
          * 长整型(long)数据在json序列化之后再反序列化，
          * Java类型将变为integer(如果数据没有超过int的最大值范围)
          * 超过范围为没有问题
-         * 不要直接比较对象相等性即可绕过此问题
+         * <del>不要直接比较对象相等性即可绕过此问题<del>
+         * 可以使用json-path进行json判断
          */
                 /*.andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0]")
                         .value(objectMapper.convertValue(sample, HashMap.class)))*/
-        Mockito.verify(spittleService, Mockito.times(1));
+
+        Mockito.verify(spittleService, Mockito.times(1))
+            .pageQuerySpittleBySpitterId(Mockito.any(SpittleDTO.class));
+//        Mockito.reset(spittleService);
 
         String jsonResult = resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
         Assert.assertEquals((int) jsonPathParser(jsonResult).read("$.data.records.length()"), 1);
@@ -169,10 +172,10 @@ public class SpittleControllerTest {
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(spittleController).build();
         // /spittle/range/spittles?leftTime=2012-06-09 00:00:00&rightTime=2012-06-09 23:59:59
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get("/spittle/range/spittles")
-                        .flashAttr("spittleDTO", dto))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+            MockMvcRequestBuilders.get("/spittle/range/spittles")
+                .flashAttr("spittleDTO", dto))
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
 
         Mockito.verify(spittleService).pageQuerySpittlesByTimeLine(dto);
         // 以下用来获取MockMvc返回(Json)
@@ -192,7 +195,9 @@ public class SpittleControllerTest {
     /**
      * Use json-path, tweaking configuration<br>
      * The config below change default action of json-path<br>
-     * Use application-context ObjectMapper config as json and mapper provider
+     * Use application-context ObjectMapper config as json and mapper provider<br>
+     * <p>
+     * Reference: https://github.com/json-path/JsonPath
      *
      * @param json standard json string
      * @return {@link DocumentContext}
