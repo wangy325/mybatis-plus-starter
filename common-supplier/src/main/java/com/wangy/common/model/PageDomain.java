@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @see OrderItem
  */
 @Data
+@NoArgsConstructor
 public class PageDomain<T> {
 
     private Long currentPage;
