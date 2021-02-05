@@ -66,6 +66,7 @@ public class SpittleControllerTest {
     static void init() {
         spittleService = Mockito.mock(ISpittleService.class);
         spittleController = new SpittleController();
+        spittleController.setSpittleService(spittleService);
         // 配置jackson对LocalDateTime的序列化/反序列化规则
         /*objectMapper = new ObjectMapper();
         JavaTimeModule javaTimeModule = new JavaTimeModule();
@@ -87,8 +88,6 @@ public class SpittleControllerTest {
             add(sample);
         }});
         pageDomain = new PageDomain<>(page);
-
-
     }
 
     @Test
@@ -104,8 +103,6 @@ public class SpittleControllerTest {
 
         // 此处必须使用类类型作为参数
         Mockito.when(spittleService.pageQuerySpittleBySpitterId(Mockito.any(SpittleDTO.class))).thenReturn(page);
-
-        spittleController.setSpittleService(spittleService);
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(spittleController).build();
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
@@ -167,9 +164,7 @@ public class SpittleControllerTest {
         dto.setLeftTime(LocalDateTime.parse("2012-06-09T00:00:00.000"));
         dto.setRightTime(LocalDateTime.parse("2012-06-09T23:59:59.999"));
 
-        Mockito.when(spittleService.pageQuerySpittlesByTimeLine(Mockito.any(SpittleDTO.class))).thenReturn(page);
-
-        spittleController.setSpittleService(spittleService);
+        Mockito.when(spittleService.pageQuerySpittlesByTimeLine(dto)).thenReturn(page);
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(spittleController).build();
         // /spittle/range/spittles?leftTime=2012-06-09 00:00:00&rightTime=2012-06-09 23:59:59
@@ -179,7 +174,7 @@ public class SpittleControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
 
-        Mockito.verify(spittleService, Mockito.times(1));
+        Mockito.verify(spittleService).pageQuerySpittlesByTimeLine(dto);
         // 以下用来获取MockMvc返回(Json)
         MvcResult mvcResult = resultActions.andReturn();
         String jsonResult = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
