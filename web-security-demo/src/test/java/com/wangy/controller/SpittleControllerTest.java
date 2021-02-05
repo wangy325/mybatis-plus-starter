@@ -25,7 +25,6 @@ import org.springframework.util.MultiValueMap;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -49,7 +48,7 @@ public class SpittleControllerTest extends BaseMockInit {
 
         sample.setSpitterId(4);
         sample.setMessage("sixth man");
-        sample.setTime(LocalDateTime.parse("2012-06-09 22:20:00", DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
+        sample.setTime(LocalDateTime.parse("2012-06-09T22:20:00"));
         sample.setLatitude(0.0d);
         sample.setLongitude(0.0d);
         sample.setId(214748364L);
