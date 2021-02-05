@@ -1,4 +1,4 @@
-package com.wangy.generator;
+package com.wangy.exception;
 
 import java.util.Objects;
 

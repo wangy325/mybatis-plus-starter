@@ -4,7 +4,7 @@ package com.wangy.controller;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
-import com.wangy.generator.SpitterException;
+import com.wangy.exception.SpitterException;
 import com.wangy.model.dto.SpitterDTO;
 import com.wangy.model.entity.Spitter;
 import com.wangy.service.ISpitterService;

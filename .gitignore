@@ -14,3 +14,6 @@ mvnw
 *.cmd
 
 **/.project
+
+/.logs/
+/web-security-demo/.logs/

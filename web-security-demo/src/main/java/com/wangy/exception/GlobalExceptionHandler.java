@@ -1,4 +1,4 @@
-package com.wangy.generator;
+package com.wangy.exception;
 
 import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
