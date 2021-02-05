@@ -2,25 +2,14 @@ package com.wangy.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.Option;
-import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
-import com.jayway.jsonpath.spi.json.JsonProvider;
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
-import com.jayway.jsonpath.spi.mapper.MappingProvider;
 import com.wangy.common.model.PageDomain;
 import com.wangy.model.dto.SpittleDTO;
 import com.wangy.model.vo.SpittleVO;
-import com.wangy.service.ISpittleService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.MediaType;
@@ -46,16 +35,9 @@ import java.util.*;
  * @date 2021/1/31 / 17:59
  */
 @SpringBootTest
-public class SpittleControllerTest {
+@Slf4j
+public class SpittleControllerTest extends BaseMockInit {
 
-    @Autowired
-    @Qualifier("objectMapper")
-    ObjectMapper objectMapper;
-
-
-    static final String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    static ISpittleService spittleService;
-    static SpittleController spittleController;
     static SpittleVO sample = SpittleVO.builder().build();
     static SpittleDTO dto = new SpittleDTO();
     static IPage<SpittleVO> page = new Page<>();
@@ -64,16 +46,6 @@ public class SpittleControllerTest {
 
     @BeforeAll
     static void init() {
-        spittleService = Mockito.mock(ISpittleService.class);
-        spittleController = new SpittleController();
-        spittleController.setSpittleService(spittleService);
-
-        // 配置jackson对LocalDateTime的序列化/反序列化规则
-        /*objectMapper = new ObjectMapper();
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
-        objectMapper.registerModule(javaTimeModule);*/
 
         sample.setSpitterId(4);
         sample.setMessage("sixth man");
@@ -94,7 +66,7 @@ public class SpittleControllerTest {
     @Test
     public void getUserSpittlesPageTest() throws Exception {
         // for debug
-//        String s = objectMapper.writeValueAsString(sample);
+        log.debug(objectMapper.writeValueAsString(sample));
         dto.setSpitterId(sample.getSpitterId());
         dto.setCurrentPage(1);
         dto.setPageSize(1);
@@ -114,6 +86,8 @@ public class SpittleControllerTest {
             .queryParams(paramMap))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            // get element from json
+            // see https://github.com/json-path/JsonPath
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.currentPage")
                 .value(pageDomain.getCurrentPage()))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize")
@@ -122,8 +96,6 @@ public class SpittleControllerTest {
                 .value(pageDomain.getPages()))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.total")
                 .value(pageDomain.getTotal()));
-        // get element from json array
-        // see https://github.com/json-path/JsonPath
         /* 报错原因 ：double和integer的问题
          * 长整型(long)数据在json序列化之后再反序列化，
          * Java类型将变为integer(如果数据没有超过int的最大值范围)
@@ -136,9 +108,9 @@ public class SpittleControllerTest {
 
         Mockito.verify(spittleService, Mockito.times(1))
             .pageQuerySpittleBySpitterId(Mockito.any(SpittleDTO.class));
-//        Mockito.reset(spittleService);
 
         String jsonResult = resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        log.info(jsonResult);
         Assert.assertEquals((int) jsonPathParser(jsonResult).read("$.data.records.length()"), 1);
         SpittleVO rvo = jsonPathParser(jsonResult).read("$.data.records[0]", SpittleVO.class);
         Assert.assertEquals(sample, rvo);
@@ -157,7 +129,8 @@ public class SpittleControllerTest {
      * 解决的方式很简单粗暴：<br>
      * 直接调用{@link MockHttpServletRequestBuilder#flashAttr(String, Object)}传入DTO对象即可
      * <p>
-     * 参考：https://www.tutorialfor.com/questions-149885.htm
+     * 参考：<a href = "https://www.tutorialfor.com/questions-149885.htm">
+     * https://www.tutorialfor.com/questions-149885.htm</a>
      */
     @Test
     public void getSpittlesTimeLinePageTest() throws Exception {
@@ -181,7 +154,7 @@ public class SpittleControllerTest {
         // 以下用来获取MockMvc返回(Json)
         MvcResult mvcResult = resultActions.andReturn();
         String jsonResult = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
-        System.out.println(jsonResult);
+        log.info(jsonResult);
 
         PageDomain<SpittleVO> rpg = jsonPathParser(jsonResult).read("$.data", PageDomain.class);
         Assert.assertEquals((int) jsonPathParser(jsonResult).read("$.data.records.length()"), 1);
@@ -190,38 +163,5 @@ public class SpittleControllerTest {
             add(rvo);
         }});
         Assert.assertEquals(rpg, pageDomain);
-    }
-
-    /**
-     * Use json-path, tweaking configuration<br>
-     * The config below change default action of json-path<br>
-     * Use application-context ObjectMapper config as json and mapper provider<br>
-     * <p>
-     * Reference: https://github.com/json-path/JsonPath
-     *
-     * @param json standard json string
-     * @return {@link DocumentContext}
-     */
-    private DocumentContext jsonPathParser(String json) {
-
-        final JsonProvider jsonProvider = new JacksonJsonProvider(objectMapper);
-        final MappingProvider mappingProvider = new JacksonMappingProvider(objectMapper);
-        Configuration.setDefaults(new Configuration.Defaults() {
-            @Override
-            public JsonProvider jsonProvider() {
-                return jsonProvider;
-            }
-
-            @Override
-            public Set<Option> options() {
-                return EnumSet.noneOf(Option.class);
-            }
-
-            @Override
-            public MappingProvider mappingProvider() {
-                return mappingProvider;
-            }
-        });
-        return JsonPath.parse(json);
     }
 }

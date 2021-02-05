@@ -1,11 +1,8 @@
 package com.wangy.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wangy.common.utils.BeanUtils;
 import com.wangy.model.entity.Spitter;
 import com.wangy.model.vo.SpitterVO;
-import com.wangy.service.ISpitterService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,20 +20,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
  * @date 2021-1-28 16:26
  */
 @SpringBootTest
-public class SpitterControllerTest {
-
-    static ISpitterService spitterService;
-    static SpitterController spitterController;
-    static ObjectMapper objectMapper;
-
-
-    @BeforeAll
-    static void initData() {
-        spitterService = Mockito.mock(ISpitterService.class);
-        spitterController = new SpitterController();
-        objectMapper = new ObjectMapper();
-    }
-
+public class SpitterControllerTest extends BaseMockInit {
 
     @Test
     public void getSpitterById() throws Exception {
@@ -53,6 +37,6 @@ public class SpitterControllerTest {
             .andExpect(jsonPath("$.data")
                 .value(objectMapper.convertValue(spitter, HashMap.class)));
 
-        Mockito.verify(spitterService, Mockito.times(1));
+        Mockito.verify(spitterService, Mockito.times(1)).getById(1);
     }
 }

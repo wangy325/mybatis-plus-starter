@@ -1,7 +1,6 @@
 package com.wangy.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,9 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/log")
+@Slf4j
 public class LogController {
-
-    Logger log = LoggerFactory.getLogger(LoggerFactory.class);
 
     @GetMapping
     public String log(){

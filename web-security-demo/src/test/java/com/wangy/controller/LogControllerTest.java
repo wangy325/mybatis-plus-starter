@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
  * @date 2021-2-5 15:33
  */
 @SpringBootTest
-public class LogControllerTest {
+public class LogControllerTest extends BaseMockInit {
 
     @Test
     public void LogTest() throws Exception {
