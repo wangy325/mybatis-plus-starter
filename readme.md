@@ -60,6 +60,9 @@ public class Entity{
 
 ### 使用分页插件
 
+## webMvc统一异常处理
+
+## Spring MessageResource
 
 ---
 
@@ -69,8 +72,9 @@ TODOS:
 - [x] 在mybatis-plus框架中使用自定义查询
 - [x] [事务已自动配置](web-security-demo/src/main/java/com/wangy/config/MybatisPlusConfig.java)
 - [ ] 完成ibatis分支下的原生mybatis配置
-- [ ] 引入日志系统（使用logback）
+- [x] 引入日志系统（logback）
 - [x] 统一异常处理
+- [x] i18n（spring message source）
 - [ ] 引入JWT统一认证
 
 - [ ] 引入SpringSecurity

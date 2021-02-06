@@ -30,7 +30,7 @@ public class SpittleDTO extends BaseEntity {
 
     private LocalDateTime time;
 
-    @NotNull
+    @NotNull(message = "{leftTime.not.null}")
     private LocalDateTime leftTime;
     private LocalDateTime rightTime;
 }

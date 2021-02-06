@@ -3,10 +3,12 @@ package com.wangy.exception;
 import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public ReqResult<?> handleException(BindException e) {
         log.severe(e.getMessage());
+        FieldError error = e.getBindingResult().getFieldError();
+        if (Objects.nonNull(error)) {
+            return ReqResult.fail(ReqState.VALIDATION_BIND_EXCEPTION, error.getDefaultMessage());
+        }
         return ReqResult.fail(ReqState.VALIDATION_BIND_EXCEPTION);
     }
 

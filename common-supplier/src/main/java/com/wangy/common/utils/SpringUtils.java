@@ -5,11 +5,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @author wangy
  * @date 2021-2-5 17:36
  */
+@Component
 public class SpringUtils implements BeanFactoryPostProcessor {
     /** Spring应用上下文环境 */
     private static ConfigurableListableBeanFactory beanFactory;

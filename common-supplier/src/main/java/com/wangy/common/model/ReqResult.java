@@ -51,8 +51,8 @@ public class ReqResult<T> {
     }
 
 
-    private static <T> ReqResult<T> ok(int code, String detail) {
-        return ReqResult.ok(code, detail, null);
+    private static <T> ReqResult<T> ok(int code, String message) {
+        return ReqResult.ok(code, message, null);
     }
 
     private static <T> ReqResult<T> ok(int code, String msg, T data) {
