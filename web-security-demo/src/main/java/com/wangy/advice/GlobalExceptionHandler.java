@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
             + Arrays.stream(e.getParams()).map(Object::toString).collect(Collectors.joining(COMMA))
             + RIGHT_BRACKET + RIGHT_ARROW
             + e.getMessage());
-        return ReqResult.fail(e.getCode(), e.getMessage());
+        return ReqResult.fail(e.getReqState(), e.getMessage());
     }
 
     @ExceptionHandler(BindException.class)

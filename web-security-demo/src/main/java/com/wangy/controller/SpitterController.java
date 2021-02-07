@@ -45,18 +45,8 @@ public class SpitterController {
      * should be logical remove -> update
      */
     @DeleteMapping("/delete/{id}")
-    public ReqResult<?> deleteSpitterById(@PathVariable int id) throws NoSuchMethodException {
+    public ReqResult<?> deleteSpitterById(@PathVariable int id) {
         boolean b = spitterService.removeById(id);
-        // a demo of how to use self-definition Exception
-        // do not throw exception in controller
-        if (!b) {
-            throw new SpitterException(
-                    getClass().getName() + SHARP + getClass().getDeclaredMethod("deleteSpitterById", int.class).getName(),
-                    new Object[]{id},
-                    ReqState.SATISFIED_RESOURCE_NOT_FOUND.getCode(),
-                    "对应id的资源不存在"
-            );
-        }
         return ReqResult.ok();
     }
 

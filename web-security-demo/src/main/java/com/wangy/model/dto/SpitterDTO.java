@@ -1,9 +1,7 @@
 package com.wangy.model.dto;
 
 import com.wangy.common.model.BaseEntity;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +14,8 @@ import java.util.List;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class SpitterDTO extends BaseEntity {
 
     private Integer id;

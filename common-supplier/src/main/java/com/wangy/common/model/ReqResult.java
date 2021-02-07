@@ -1,13 +1,18 @@
 package com.wangy.common.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wangy.common.enums.ReqState;
 import lombok.Data;
+import org.springframework.lang.NonNull;
 
 /**
  * 基础响应
+ * <p>
+ * &#64;{@link JsonInclude} 用来定义序列化规则，当前定义为当{@link ReqResult#data}为空时，忽略此字段的序列化
+ * （返回的json中不显示key data）
  *
  * @author wangy
+ * @see JsonInclude;
  */
 @Data
 public class ReqResult<T> {
@@ -16,6 +21,7 @@ public class ReqResult<T> {
 
     private String msg;
 
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private T data;
 
 
@@ -68,11 +74,11 @@ public class ReqResult<T> {
         return ReqResult.fail(state.getCode(), state.getMessage());
     }
 
-    public static <T> ReqResult<T> fail(ReqState state, String message){
+    public static <T> ReqResult<T> fail(ReqState state, @NonNull String message) {
         return ReqResult.fail(state.getCode(), message);
     }
 
-    public static <T> ReqResult<T> fail(int code, String msg) {
+    public static <T> ReqResult<T> fail(int code, @NonNull String msg) {
         return new ReqResult<>(code, msg, null);
     }
 }

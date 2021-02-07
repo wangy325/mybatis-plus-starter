@@ -1,5 +1,7 @@
 package com.wangy.exception;
 
+import com.wangy.common.enums.ReqState;
+
 import java.util.Objects;
 
 /**
@@ -21,26 +23,26 @@ public class BaseException extends RuntimeException {
     private Object[] params;
 
     /**
-     * status code
+     * request status, with system defined message
      */
-    private int code;
+    private ReqState reqState;
 
     /**
-     * exception brief message
+     * 自定义异常消息，当此消息不为null时，使用此消息，否则使用{@link ReqState}中定义的国际化消息
      */
     private String message;
 
 
-    public BaseException(String methodSign, Object[] params, int code, String message) {
+    public BaseException(String methodSign, Object[] params, ReqState state, String message) {
         this.methodSign = methodSign;
         this.params = params;
-        this.code = code;
+        this.reqState = state;
         this.message = message;
     }
 
     @Override
     public String getMessage() {
-        return Objects.isNull(message) ? super.getMessage() : message;
+        return Objects.isNull(message) ? reqState.getMessage() : message;
     }
 
     public String getMethodSign() {
@@ -51,7 +53,7 @@ public class BaseException extends RuntimeException {
         return params;
     }
 
-    public int getCode() {
-        return code;
+    public ReqState getReqState() {
+        return reqState;
     }
 }

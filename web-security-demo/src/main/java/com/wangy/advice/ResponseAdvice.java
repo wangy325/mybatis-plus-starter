@@ -1,22 +1,22 @@
 package com.wangy.advice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wangy.common.enums.HttpStatus;
 import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.jsf.el.SpringBeanFacesELResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 /**
@@ -26,7 +26,8 @@ import java.util.Locale;
  */
 @Slf4j
 @RestControllerAdvice
-public class ResponseAdvice<T extends ReqResult<P>, P> implements ResponseBodyAdvice<T> {
+@SuppressWarnings({"unchecked"})
+public class ResponseAdvice<T> implements ResponseBodyAdvice<T> {
 
     @Autowired
     private MessageSource messageSource;
@@ -36,8 +37,9 @@ public class ResponseAdvice<T extends ReqResult<P>, P> implements ResponseBodyAd
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
         String typeName = returnType.getExecutable().getAnnotatedReturnType().getType().getTypeName();
-        // if the resultType is ReqResult, then do beforeBodyWrite()
-        return typeName.matches("\\S+ReqResult\\S+");
+        // if the resultType matches the regex, then do beforeBodyWrite()
+        log.debug("{} matches \"\\S+ReqResult\\S+|\\S+ResponseEntity<.+>\" :{}", typeName, typeName.matches("\\S+ReqResult\\S+|\\S+ResponseEntity<.+>"));
+        return typeName.matches("\\S+ReqResult\\S+|\\S+ResponseEntity<.+>");
     }
 
     @Override
@@ -48,15 +50,26 @@ public class ResponseAdvice<T extends ReqResult<P>, P> implements ResponseBodyAd
                              ServerHttpRequest request,
                              ServerHttpResponse response) {
         log.debug("default JVM local setting:" + Locale.getDefault());
-        log.debug("current MVC local setting:" + webMvcProperties.getLocale());
+//        log.debug("current MVC local setting:" + webMvcProperties.getLocale());
         try {
             // the regex match message pattern: http.ok, validation.bind.exception,... in message_*.properties
-            if (body.getMsg().matches("^([a-z]+\\.)+[a-z]+$")) {
-                body.setMsg(messageSource.getMessage(body.getMsg(), null, webMvcProperties.getLocale()));
+            if (body instanceof ReqResult) {
+                ReqResult<?> bd = (ReqResult<?>) body;
+                String regex = "^([a-z]+\\.)+[a-z]+$";
+                if (bd.getMsg().matches(regex)) {
+                    bd.setMsg(messageSource.getMessage(bd.getMsg(), null, webMvcProperties.getLocale()));
+                }
+            } else if (body instanceof LinkedHashMap) {
+                // status, error, message, timestamp, path
+                LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) body;
+                if ((int)map.get("status") == HttpStatus.NOT_FOUND.getCode()){
+                    return (T) ReqResult.fail(ReqState.NOT_FOUND,
+                        messageSource.getMessage(ReqState.NOT_FOUND.getMessage(), null, webMvcProperties.getLocale()));
+                }
             }
         } catch (Exception e) {
-            ReqResult<P> error = ReqResult.fail(ReqState.RESPONSE_ADVICE_ERROR,
-                    messageSource.getMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage(), null, webMvcProperties.getLocale()));
+            ReqResult<?> error = ReqResult.fail(ReqState.RESPONSE_ADVICE_ERROR,
+                messageSource.getMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage(), null, webMvcProperties.getLocale()));
             return (T) error;
         }
         return body;

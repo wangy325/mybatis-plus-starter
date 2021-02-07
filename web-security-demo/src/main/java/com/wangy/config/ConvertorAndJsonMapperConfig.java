@@ -33,7 +33,7 @@ import java.util.Date;
  * @date 2021-2-3 11:34
  */
 @Configuration
-public class DateConfig {
+public class ConvertorAndJsonMapperConfig {
 
     /**
      * 默认日期时间格式
