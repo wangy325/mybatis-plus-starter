@@ -28,6 +28,7 @@ public enum ReqState {
     FILE_UPLOAD_ERROR(500_05, "file.upload.error"),
     FILE_NAME_TOO_LONG(500_06,"file.name.too.long"),
     FILE_TOO_LARGE(500_07,"file.too.large"),
+    RESPONSE_ADVICE_ERROR(500_08, "response.advice.error"),
 
     UNKNOWN_ERROR(600_00, "unknown.error");
 

@@ -2,6 +2,7 @@ package com.wangy.exception;
 
 import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,10 +13,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.wangy.common.constant.UniversalConstants.LEFT_BRACKET;
-import static com.wangy.common.constant.UniversalConstants.RIGHT_BRACKET;
-import static com.wangy.common.constant.UniversalConstants.RIGHT_ARROW;
-import static com.wangy.common.constant.UniversalConstants.COMMA;
+import static com.wangy.common.constant.UniversalConstants.*;
 
 
 /**
@@ -34,11 +32,17 @@ public class GlobalExceptionHandler {
 //        System.out.println(Arrays.stream(ints).mapToObj(String::valueOf).collect(Collectors.joining(COMMA)));  // 1,2,3,4
 
         log.severe(e.getMethodSign()
-                + LEFT_BRACKET
-                + Arrays.stream(e.getParams()).map(Object::toString).collect(Collectors.joining(COMMA))
-                + RIGHT_BRACKET + RIGHT_ARROW
-                + e.getMessage());
+            + LEFT_BRACKET
+            + Arrays.stream(e.getParams()).map(Object::toString).collect(Collectors.joining(COMMA))
+            + RIGHT_BRACKET + RIGHT_ARROW
+            + e.getMessage());
         return ReqResult.fail(e.getCode(), e.getMessage());
+    }
+
+    @ExceptionHandler(ConversionFailedException.class)
+    public ReqResult<?> paramMisMatchExceptionHandler(ConversionFailedException e) {
+        log.severe(e.getMessage());
+        return ReqResult.fail(ReqState.VALIDATION_BIND_EXCEPTION);
     }
 
     @ExceptionHandler(BindException.class)
