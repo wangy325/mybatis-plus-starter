@@ -53,8 +53,8 @@ public class SpitterController {
             throw new SpitterException(
                     getClass().getName() + SHARP + getClass().getDeclaredMethod("deleteSpitterById", int.class).getName(),
                     new Object[]{id},
-                    ReqState.SERVER_INTERNAL_ERROR.getCode(),
-                    "对应id的资源不存在！"
+                    ReqState.SATISFIED_RESOURCE_NOT_FOUND.getCode(),
+                    "对应id的资源不存在"
             );
         }
         return ReqResult.ok();

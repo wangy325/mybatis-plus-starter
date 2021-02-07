@@ -16,7 +16,7 @@ import java.util.Locale;
  * @date 2021-2-6 14:33
  */
 @Configuration
-public class MessageConfig {
+public class MessageSourceConfig {
 
     @Value("${spring.messages.basename}")
     private String basename;

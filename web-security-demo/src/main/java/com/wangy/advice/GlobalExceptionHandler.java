@@ -1,8 +1,8 @@
-package com.wangy.exception;
+package com.wangy.advice;
 
 import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
-import org.springframework.core.convert.ConversionFailedException;
+import com.wangy.exception.SpitterException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,18 +39,12 @@ public class GlobalExceptionHandler {
         return ReqResult.fail(e.getCode(), e.getMessage());
     }
 
-    @ExceptionHandler(ConversionFailedException.class)
-    public ReqResult<?> paramMisMatchExceptionHandler(ConversionFailedException e) {
-        log.severe(e.getMessage());
-        return ReqResult.fail(ReqState.VALIDATION_BIND_EXCEPTION);
-    }
-
     @ExceptionHandler(BindException.class)
     public ReqResult<?> handleException(BindException e) {
         log.severe(e.getMessage());
         FieldError error = e.getBindingResult().getFieldError();
-        if (Objects.nonNull(error)) {
-            return ReqResult.fail(ReqState.VALIDATION_BIND_EXCEPTION, error.getDefaultMessage());
+        if (Objects.nonNull(error) && Objects.nonNull(error.getDefaultMessage())) {
+            return ReqResult.fail(ReqState.VALIDATION_BIND_EXCEPTION, error.getDefaultMessage().split(SEMICOLON)[0]);
         }
         return ReqResult.fail(ReqState.VALIDATION_BIND_EXCEPTION);
     }

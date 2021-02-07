@@ -12,6 +12,7 @@ public interface UniversalConstants {
     String PLUS = "+";
     String COMMA = ",";
     String COLON = ":";
+    String SEMICOLON = ";";
     String SINGLE_QUOTATION = "'";
     String DOUBLE_QUOTATION = "\"";
     String SHARP = "#";
