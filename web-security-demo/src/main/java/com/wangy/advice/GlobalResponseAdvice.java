@@ -3,13 +3,10 @@ package com.wangy.advice;
 import com.wangy.common.enums.HttpStatus;
 import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
+import com.wangy.common.utils.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
-import org.springframework.context.MessageSource;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.util.LinkedHashMap;
-import java.util.Locale;
 
 /**
  * @author wangy
@@ -28,11 +24,6 @@ import java.util.Locale;
 @RestControllerAdvice
 @SuppressWarnings({"unchecked"})
 public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
-
-    @Autowired
-    private MessageSource messageSource;
-    @Autowired
-    private WebMvcProperties webMvcProperties;
 
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
@@ -58,7 +49,7 @@ public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
                 ReqResult<?> bd = (ReqResult<?>) body;
                 String regex = "^([a-z]+\\.)+[a-z]+$";
                 if (bd.getMsg().matches(regex)) {
-                    bd.setMsg(messageSource.getMessage(bd.getMsg(), null, webMvcProperties.getLocale()));
+                    bd.setMsg(MessageUtils.getMvcMessage(bd.getMsg()));
                 }
             } else if (body instanceof LinkedHashMap) {
                 // status, error, message, timestamp, path
@@ -67,20 +58,20 @@ public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
                 switch (status) {
                     case 404:
                         return (T) ReqResult.fail(ReqState.NOT_FOUND,
-                                messageSource.getMessage(ReqState.NOT_FOUND.getMessage(), null, webMvcProperties.getLocale()));
+                            MessageUtils.getMvcMessage(ReqState.NOT_FOUND.getMessage()));
                     case 500:
                         return (T) ReqResult.fail(ReqState.SERVER_INTERNAL_ERROR,
-                                messageSource.getMessage(ReqState.SERVER_INTERNAL_ERROR.getMessage(), null, webMvcProperties.getLocale()));
+                            MessageUtils.getMvcMessage(ReqState.SERVER_INTERNAL_ERROR.getMessage()));
                     default:
                 }
                 if (status == HttpStatus.NOT_FOUND.getCode()) {
                     return (T) ReqResult.fail(ReqState.NOT_FOUND,
-                            messageSource.getMessage(ReqState.NOT_FOUND.getMessage(), null, webMvcProperties.getLocale()));
+                        MessageUtils.getMvcMessage(ReqState.NOT_FOUND.getMessage()));
                 }
             }
         } catch (Exception e) {
             ReqResult<?> error = ReqResult.fail(ReqState.RESPONSE_ADVICE_ERROR,
-                    messageSource.getMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage(), null, webMvcProperties.getLocale()));
+                MessageUtils.getMvcMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage()));
             return (T) error;
         }
         return body;
