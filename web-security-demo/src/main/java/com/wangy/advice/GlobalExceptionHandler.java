@@ -28,14 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SpitterException.class)
     public ReqResult<?> handleException(SpitterException e) {
-//        int[] ints = {1, 2, 3, 4};
-//        System.out.println(Arrays.stream(ints).mapToObj(String::valueOf).collect(Collectors.joining(COMMA)));  // 1,2,3,4
-
-        log.severe(e.getMethodSign()
-            + LEFT_BRACKET
-            + Arrays.stream(e.getParams()).map(Object::toString).collect(Collectors.joining(COMMA))
-            + RIGHT_BRACKET + RIGHT_ARROW
-            + e.getMessage());
+        log.severe(e.throwableString());
         return ReqResult.fail(e.getReqState(), e.getMessage());
     }
 

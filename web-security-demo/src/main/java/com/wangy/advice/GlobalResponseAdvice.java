@@ -27,7 +27,7 @@ import java.util.Locale;
 @Slf4j
 @RestControllerAdvice
 @SuppressWarnings({"unchecked"})
-public class ResponseAdvice<T> implements ResponseBodyAdvice<T> {
+public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
 
     @Autowired
     private MessageSource messageSource;
@@ -49,8 +49,9 @@ public class ResponseAdvice<T> implements ResponseBodyAdvice<T> {
                              Class<? extends HttpMessageConverter<?>> selectedConverterType,
                              ServerHttpRequest request,
                              ServerHttpResponse response) {
-        log.debug("default JVM local setting:" + Locale.getDefault());
-//        log.debug("current MVC local setting:" + webMvcProperties.getLocale());
+//        log.debug("default JVM local setting: {}" , Locale.getDefault());
+//        log.debug("current MVC local setting: {}" , webMvcProperties.getLocale());
+
         try {
             // the regex match message pattern: http.ok, validation.bind.exception,... in message_*.properties
             if (body instanceof ReqResult) {
@@ -62,14 +63,24 @@ public class ResponseAdvice<T> implements ResponseBodyAdvice<T> {
             } else if (body instanceof LinkedHashMap) {
                 // status, error, message, timestamp, path
                 LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) body;
-                if ((int)map.get("status") == HttpStatus.NOT_FOUND.getCode()){
+                int status = (int) map.get("status");
+                switch (status) {
+                    case 404:
+                        return (T) ReqResult.fail(ReqState.NOT_FOUND,
+                                messageSource.getMessage(ReqState.NOT_FOUND.getMessage(), null, webMvcProperties.getLocale()));
+                    case 500:
+                        return (T) ReqResult.fail(ReqState.SERVER_INTERNAL_ERROR,
+                                messageSource.getMessage(ReqState.SERVER_INTERNAL_ERROR.getMessage(), null, webMvcProperties.getLocale()));
+                    default:
+                }
+                if (status == HttpStatus.NOT_FOUND.getCode()) {
                     return (T) ReqResult.fail(ReqState.NOT_FOUND,
-                        messageSource.getMessage(ReqState.NOT_FOUND.getMessage(), null, webMvcProperties.getLocale()));
+                            messageSource.getMessage(ReqState.NOT_FOUND.getMessage(), null, webMvcProperties.getLocale()));
                 }
             }
         } catch (Exception e) {
             ReqResult<?> error = ReqResult.fail(ReqState.RESPONSE_ADVICE_ERROR,
-                messageSource.getMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage(), null, webMvcProperties.getLocale()));
+                    messageSource.getMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage(), null, webMvcProperties.getLocale()));
             return (T) error;
         }
         return body;

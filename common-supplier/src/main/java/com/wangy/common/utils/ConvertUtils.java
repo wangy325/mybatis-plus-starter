@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @author ruoyi
  */
-public class PracticalConvertor {
+public class ConvertUtils {
     /**
      * 转换为字符串<br>
      * 如果给定的值为null，或者转换失败，返回默认值<br>

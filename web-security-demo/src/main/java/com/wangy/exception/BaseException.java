@@ -2,7 +2,12 @@ package com.wangy.exception;
 
 import com.wangy.common.enums.ReqState;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.wangy.common.constant.UniversalConstants.*;
 
 /**
  * 异常基类
@@ -13,9 +18,9 @@ import java.util.Objects;
 public class BaseException extends RuntimeException {
 
     /**
-     * 异常发生的方法签名
+     * method throw exception
      */
-    private String methodSign;
+    private Method throwMethod;
 
     /**
      * 方法参数，按照形参列表的顺序放入数组中
@@ -32,11 +37,10 @@ public class BaseException extends RuntimeException {
      */
     private String message;
 
-
-    public BaseException(String methodSign, Object[] params, ReqState state, String message) {
-        this.methodSign = methodSign;
+    public BaseException(Method throwMethod, Object[] params, ReqState reqState, String message) {
+        this.throwMethod = throwMethod;
         this.params = params;
-        this.reqState = state;
+        this.reqState = reqState;
         this.message = message;
     }
 
@@ -45,15 +49,37 @@ public class BaseException extends RuntimeException {
         return Objects.isNull(message) ? reqState.getMessage() : message;
     }
 
-    public String getMethodSign() {
-        return methodSign;
-    }
-
     public Object[] getParams() {
         return params;
     }
 
     public ReqState getReqState() {
         return reqState;
+    }
+
+    /**
+     * generate log message for user-definition exception
+     *
+     * @return exception log message
+     */
+    public String throwableString() {
+        StringBuffer sb = new StringBuffer();
+        if (Objects.nonNull(throwMethod)) {
+            sb.append(throwMethod.getDeclaringClass().getName())
+                    .append(SHARP)
+                    .append(throwMethod.getName());
+        }
+        if (Objects.nonNull(params)) {
+//          int[] ints = {1, 2, 3, 4};
+//          System.out.println(Arrays.stream(ints).mapToObj(String::valueOf).collect(Collectors.joining(COMMA)));  // 1,2,3,4
+            sb.append(LEFT_BRACKET)
+                    .append(Arrays.stream(params).map(Object::toString).collect(Collectors.joining(COMMA)));
+        }
+        if (sb.length() == 0) {
+            sb.append(getMessage());
+        } else {
+            sb.append(SPACE).append(RIGHT_ARROW).append(SPACE).append(getMessage());
+        }
+        return sb.toString();
     }
 }

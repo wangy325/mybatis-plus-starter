@@ -8,11 +8,12 @@ public interface UniversalConstants {
 
     String UNIX_SEPARATOR = "/";
     String WIN_SEPARATOR = "\\";
-    String DOT = ".";
+    String DOT = "\\.";
     String PLUS = "+";
     String COMMA = ",";
     String COLON = ":";
     String SEMICOLON = ";";
+    String SPACE=" ";
     String SINGLE_QUOTATION = "'";
     String DOUBLE_QUOTATION = "\"";
     String SHARP = "#";

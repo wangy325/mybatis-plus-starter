@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wangy.common.enums.ReqState;
 import com.wangy.common.utils.BeanUtils;
+import com.wangy.common.utils.ReflectionUtils;
 import com.wangy.exception.SpitterException;
 import com.wangy.model.dto.SpitterDTO;
 import com.wangy.model.entity.Spitter;
@@ -15,8 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-
-import static com.wangy.common.constant.UniversalConstants.SHARP;
 
 /**
  * <p>
@@ -37,16 +36,12 @@ public class SpitterServiceImpl extends ServiceImpl<SpitterMapper, Spitter> impl
         Spitter spitter = new Spitter();
         BeanUtils.copyProperties(dto, spitter);
         if (!updateById(spitter)) {
-            try {
-                throw new SpitterException(
-                    getClass().getName() + SHARP + getClass().getDeclaredMethod("updateFromDtoById", SpitterDTO.class).getName(),
-                    new Object[]{dto},
-                    ReqState.SATISFIED_RESOURCE_NOT_FOUND,
-                    "no.specific.id.resource"
-                );
-            } catch (NoSuchMethodException e) {
-                // ignore
-            }
+            // simplest way to throw self-definition exception
+//            throw new SpitterException(ReqState.SATISFIED_RESOURCE_NOT_FOUND);
+            // recommend way to throw self-definition exception
+            throw new SpitterException(
+                    ReflectionUtils.getAccessibleMethod(this, "updateFromDtoById", SpitterDTO.class),
+                    ReqState.SATISFIED_RESOURCE_NOT_FOUND);
         }
         return true;
     }
