@@ -19,6 +19,10 @@ public class MessageUtils {
         return messageSource.getMessage(code, null, webMvcProperties.getLocale());
     }
 
+    public static String getMvcMessageWithArgs(String code, String... args){
+        return messageSource.getMessage(code, args, webMvcProperties.getLocale());
+    }
+
     public static MessageUtils build() {
         return SpringUtils.getBean(MessageUtils.class);
     }

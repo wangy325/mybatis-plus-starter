@@ -16,20 +16,24 @@ public class SpitterException extends BaseException implements Serializable {
 
     private static final long serialVersionUID = -6627267233818274355L;
 
+    public SpitterException(Method throwMethod, Object[] params, ReqState reqState, String message) {
+        super(throwMethod, params, reqState, message);
+    }
+
     public SpitterException(Method method, Objects[] params, ReqState state) {
-        super(method, params, state, null);
+        super(method, params, state);
     }
 
     public SpitterException(Method method, ReqState state) {
-        this(method, null, state);
+        super(method, state);
     }
 
     public SpitterException(ReqState state) {
-        this(state, null);
+        super(state);
     }
 
     public SpitterException(ReqState state, String message) {
-        super(null, null, state, message);
+        super(state, message);
     }
 
 

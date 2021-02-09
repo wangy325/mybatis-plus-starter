@@ -11,6 +11,49 @@ import static com.wangy.common.constant.UniversalConstants.*;
 
 /**
  * 异常基类
+ * <p>
+ * How to use user definition exception:
+ * <li>
+ * 1. Initializing with all properties.<br>
+ * The {@link Method}(throwMethod) and {@link Object}[](params) consist
+ * the full-qualified name of caller which throws exception. Which means this two properties only used to debug.
+ * If a user-definition exception is thrown in this case, you will see a <b>ERROR</b> log like this:
+ *
+ * <pre>
+ *     c.w.a.GlobalExceptionHandler(31): className#methodName(paramsList) -> error message
+ *     </pre>
+ * And the {@link ReqState}(reqState) and {@link String}(message) represent the HTTP response <b>code</b> and
+ * <b>message</b>.
+ * </li>
+ * <p>
+ * <li>
+ * 2. Initializing with {@link Method}(throwMethod), {@link Object}[](params), and {@link ReqState}(reqState)<br>
+ * If a user-definition exception is thrown in this case, you will see a same <b>ERROR</b> log pattern as usage 1.<br>
+ * The difference between usage 1 and 2 is that usage 2 use {@link ReqState#getMessage()} as HTTP response
+ * <b>message</b>
+ * </li>
+ * <p>
+ * <li>3. Initializing with {@link Method}(throwMethod) and {@link ReqState}(reqState) </li><br>
+ * If a user-definition exception is thrown in this case, you will see a <b>ERROR</b> log like this:
+ * <pre>
+ *     c.w.a.GlobalExceptionHandler(31): className#methodName -> error message
+ * </pre>
+ * This also use the {@link ReqState#getMessage()} as HTTP response <b>message</b>
+ * <p>
+ * <li>4. Initializing with {@link ReqState}(reqState) and {@link String}(message)</li><br>
+ * If a user-definition exception is thrown in this case, you will see a <b>ERROR</b> log like this:
+ * <pre>
+ *     c.w.a.GlobalExceptionHandler(31): className#methodName -> error message
+ * </pre>
+ * <p>
+ * <li>5. Initializing with {@link this#reqState} only</li><br>
+ * The simplest way to throw a user definition exception, supplying HTTP response code and message by using a
+ * {@link ReqState} instance.
+ * If a user-definition exception is thrown in this case, you will see a <b>ERROR</b> log like this:
+ * <pre>
+ *     c.w.a.GlobalExceptionHandler(31): -> error message
+ * </pre>
+ * This also use the {@link ReqState#getMessage()} as HTTP response <b>message</b>
  *
  * @author wangy
  * @date 2021-2-4 11:08
@@ -42,6 +85,22 @@ public class BaseException extends RuntimeException {
         this.params = params;
         this.reqState = reqState;
         this.message = message;
+    }
+
+    public BaseException(Method method, Objects[] params, ReqState state) {
+        this(method, params, state, null);
+    }
+
+    public BaseException(Method method, ReqState state) {
+        this(method, null, state);
+    }
+
+    public BaseException(ReqState state, String message) {
+        this(null, null, state, message);
+    }
+
+    public BaseException(ReqState state) {
+        this(state, null);
     }
 
     @Override
