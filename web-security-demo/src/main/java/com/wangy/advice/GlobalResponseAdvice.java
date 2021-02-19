@@ -42,11 +42,8 @@ public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
                              Class<? extends HttpMessageConverter<?>> selectedConverterType,
                              ServerHttpRequest request,
                              ServerHttpResponse response) {
-//        log.debug("default JVM local setting: {}" , Locale.getDefault());
-//        log.debug("current MVC local setting: {}" , webMvcProperties.getLocale());
-
         try {
-            // the regex match message pattern: http.ok, validation.bind.exception,... in message_*.properties
+            // the regex match message pattern: http.ok, validation.bind.exception,... in messages*.properties
             if (body instanceof ReqResult) {
                 ReqResult<?> bd = (ReqResult<?>) body;
                 String regex = "^([a-z]+\\.)+[a-z]+$";
@@ -68,6 +65,7 @@ public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
                 }
             }
         } catch (Exception e) {
+            // user should never see this response...
             ReqResult<?> error = ReqResult.fail(ReqState.RESPONSE_ADVICE_ERROR,
                     MessageUtils.getMvcMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage()));
             return (T) error;
