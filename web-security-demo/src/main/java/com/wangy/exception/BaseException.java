@@ -46,7 +46,7 @@ import static com.wangy.common.constant.UniversalConstants.*;
  *     c.w.a.GlobalExceptionHandler(31): className#methodName -> error message
  * </pre>
  * <p>
- * <li>5. Initializing with {@link this#reqState} only</li><br>
+ * <li>5. Initializing with {@link ReqState}(reqState) only</li><br>
  * The simplest way to throw a user definition exception, supplying HTTP response code and message by using a
  * {@link ReqState} instance.
  * If a user-definition exception is thrown in this case, you will see a <b>ERROR</b> log like this:

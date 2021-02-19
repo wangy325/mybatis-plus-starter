@@ -34,14 +34,13 @@ public class StringUtils {
      */
     static String emptyToNull(String string) {
         if (string.trim().isEmpty()) {
-            System.out.println("is empty");
             string = null;
         }
         return string;
     }
 
     public static void main(String[] args) {
-        String a = "a   b";
+        String a = "   ";
 
         System.out.println(emptyToNull(a));
     }

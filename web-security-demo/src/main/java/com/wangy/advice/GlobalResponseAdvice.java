@@ -16,6 +16,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import java.util.LinkedHashMap;
 
 /**
+ * Spring MVC 全局响应处理
+ *
  * @author wangy
  * @version 1.0
  * @date 2021/2/6 / 21:03
@@ -58,20 +60,16 @@ public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
                 switch (status) {
                     case 404:
                         return (T) ReqResult.fail(ReqState.NOT_FOUND,
-                            MessageUtils.getMvcMessage(ReqState.NOT_FOUND.getMessage()));
+                                MessageUtils.getMvcMessage(ReqState.NOT_FOUND.getMessage()));
                     case 500:
                         return (T) ReqResult.fail(ReqState.SERVER_INTERNAL_ERROR,
-                            MessageUtils.getMvcMessage(ReqState.SERVER_INTERNAL_ERROR.getMessage()));
+                                MessageUtils.getMvcMessage(ReqState.SERVER_INTERNAL_ERROR.getMessage()));
                     default:
-                }
-                if (status == HttpStatus.NOT_FOUND.getCode()) {
-                    return (T) ReqResult.fail(ReqState.NOT_FOUND,
-                        MessageUtils.getMvcMessage(ReqState.NOT_FOUND.getMessage()));
                 }
             }
         } catch (Exception e) {
             ReqResult<?> error = ReqResult.fail(ReqState.RESPONSE_ADVICE_ERROR,
-                MessageUtils.getMvcMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage()));
+                    MessageUtils.getMvcMessage(ReqState.RESPONSE_ADVICE_ERROR.getMessage()));
             return (T) error;
         }
         return body;
