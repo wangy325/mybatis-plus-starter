@@ -2,7 +2,7 @@ package com.wangy.common.utils;
 
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.MessageSource;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * @author wangy
@@ -10,16 +10,17 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
  * @date 2021/2/8 / 23:38
  */
 public class MessageUtils {
+
     static MessageSource messageSource
-        = SpringUtils.getBean(ReloadableResourceBundleMessageSource.class);
+            = SpringUtils.getBean(AbstractApplicationContext.MESSAGE_SOURCE_BEAN_NAME);
     static WebMvcProperties webMvcProperties
-        = SpringUtils.getBean(WebMvcProperties.class);
+            = SpringUtils.getBean(WebMvcProperties.class);
 
     public static String getMvcMessage(String code) {
         return messageSource.getMessage(code, null, webMvcProperties.getLocale());
     }
 
-    public static String getMvcMessageWithArgs(String code, String... args){
+    public static String getMvcMessageWithArgs(String code, String... args) {
         return messageSource.getMessage(code, args, webMvcProperties.getLocale());
     }
 

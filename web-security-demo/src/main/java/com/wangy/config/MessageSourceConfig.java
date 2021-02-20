@@ -5,6 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.Locale;
@@ -33,9 +34,10 @@ public class MessageSourceConfig {
      */
     @Bean
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource messageSource
-                = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename(basename);
+        ResourceBundleMessageSource messageSource
+                = new ResourceBundleMessageSource();
+//        messageSource.setBasename(basename);
+        messageSource.setBasenames(basename);
         messageSource.setDefaultEncoding(msgCharset);
         return messageSource;
     }
