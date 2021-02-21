@@ -2,6 +2,7 @@ package com.wangy.common.utils;
 
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.AbstractApplicationContext;
 
 /**
@@ -13,15 +14,9 @@ public class MessageUtils {
 
     static MessageSource messageSource
             = SpringUtils.getBean(AbstractApplicationContext.MESSAGE_SOURCE_BEAN_NAME);
-    static WebMvcProperties webMvcProperties
-            = SpringUtils.getBean(WebMvcProperties.class);
 
-    public static String getMvcMessage(String code) {
-        return messageSource.getMessage(code, null, webMvcProperties.getLocale());
-    }
-
-    public static String getMvcMessageWithArgs(String code, String... args) {
-        return messageSource.getMessage(code, args, webMvcProperties.getLocale());
+    public static String getMvcMessage(String code, String... args) {
+        return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
     }
 
     public static MessageUtils build() {

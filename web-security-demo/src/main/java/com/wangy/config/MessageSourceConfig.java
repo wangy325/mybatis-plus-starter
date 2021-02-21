@@ -7,6 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 
@@ -23,6 +26,8 @@ public class MessageSourceConfig {
     private String basename;
     @Value("${spring.messages.encoding}")
     private String msgCharset;
+    @Value("${spring.mvc.locale}")
+    private Locale locale;
 
 
     /**
@@ -57,5 +62,32 @@ public class MessageSourceConfig {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource);
         return bean;
+    }
+
+    /**
+     * use SessionLocaleResolver
+     *
+     * @return {@link SessionLocaleResolver}
+     */
+    @Bean
+    public SessionLocaleResolver localeResolver() {
+        SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+        sessionLocaleResolver.setDefaultLocale(locale);
+        return sessionLocaleResolver;
+    }
+
+    // it's ok to use CookieLocaleResolver
+    /*@Bean
+    public CookieLocaleResolver localeResolver(){
+        CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+        cookieLocaleResolver.setDefaultLocale(locale);
+        return cookieLocaleResolver;
+    }*/
+
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
+        return localeChangeInterceptor;
     }
 }
