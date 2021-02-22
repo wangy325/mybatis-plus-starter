@@ -10,6 +10,7 @@ import org.springframework.web.servlet.support.RequestContext;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
 
 /**
@@ -40,5 +41,11 @@ public class LogController {
     public ReqResult<?> locale(HttpServletRequest request) {
         RequestContext rc = new RequestContext(request);
         return ReqResult.ok(rc.getMessage("http.ok"), rc.getLocale());
+    }
+
+    @GetMapping("/request/locale")
+    public ReqResult<?> locale(HttpServletRequest request, HttpServletResponse response){
+        // TODO why this method always return default locale?
+        return ReqResult.ok(request.getLocale());
     }
 }

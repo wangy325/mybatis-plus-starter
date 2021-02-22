@@ -12,6 +12,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -24,6 +25,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.Date;
 
 /**
@@ -48,9 +51,11 @@ public class ConvertorAndJsonMapperConfig {
      */
     static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
+    /** 匹配通用格式*/
+    static final String UNIVERSAL_FORMAT = "[yyyy][[-][/][.]MM][[-][/][.]dd][ ][HH][[:][.]mm][[:][.]ss][[:][.]SSS]";
+
 //    @Autowired
 //    GenericConversionService genericConversionService;
-
 
     /**
      * LocalDate转换器，用于转换RequestParam和PathVariable参数<br>
@@ -79,7 +84,7 @@ public class ConvertorAndJsonMapperConfig {
         return new Converter<String, LocalDateTime>() {
             @Override
             public LocalDateTime convert(String source) {
-                return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT));
+                return LocalDateTime.parse(source, dateTimeFormatterBuilder());
             }
         };
     }
@@ -118,7 +123,7 @@ public class ConvertorAndJsonMapperConfig {
 
 
     /**
-     * Json序列化和反序列化转换器，用于转换Post请求体中的json以及将我们的对象序列化为返回响应的json<br>
+     * Json序列化和反序列化转换器，用于转换HTTP 请求体（requestBody）的json以及将我们的对象序列化为返回响应的json<br>
      * 自定义jackson序列化和反序列化的行为，主要针对时间日期的格式
      * <p>
      * 使用此配置之后可以忽略单独的&#64;{@link com.fasterxml.jackson.annotation.JsonFormat}注解
@@ -133,12 +138,12 @@ public class ConvertorAndJsonMapperConfig {
 
         //LocalDateTime系列序列化和反序列化模块，继承自jsr310，我们在这里修改了日期格式
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)));
-        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)));
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
-        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatterBuilder()));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatterBuilder()));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(dateTimeFormatterBuilder()));
+        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateTimeFormatterBuilder()));
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(dateTimeFormatterBuilder()));
+        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(dateTimeFormatterBuilder()));
 
 
         //Date序列化和反序列化
@@ -165,5 +170,18 @@ public class ConvertorAndJsonMapperConfig {
         // 注册新的模块到objectMapper
         objectMapper.registerModule(javaTimeModule);
         return objectMapper;
+    }
+
+    private DateTimeFormatter dateTimeFormatterBuilder(){
+        return new DateTimeFormatterBuilder()
+                .appendPattern(UNIVERSAL_FORMAT)
+                .parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDateTime.now().getYear())
+                .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
+                .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .parseDefaulting(ChronoField.NANO_OF_SECOND, 0)
+                .toFormatter();
     }
 }

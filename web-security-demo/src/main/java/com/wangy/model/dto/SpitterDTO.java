@@ -3,6 +3,8 @@ package com.wangy.model.dto;
 import com.wangy.common.model.BaseEntity;
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SpitterDTO extends BaseEntity {
 
+    @NotNull(message = "{id.not.null}")
     private Integer id;
 
     private String firstname;

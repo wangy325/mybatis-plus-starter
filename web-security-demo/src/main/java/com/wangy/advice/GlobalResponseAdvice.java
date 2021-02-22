@@ -31,8 +31,12 @@ public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
     public boolean supports(MethodParameter returnType, Class converterType) {
         String typeName = returnType.getExecutable().getAnnotatedReturnType().getType().getTypeName();
         // if the resultType matches the regex, then do beforeBodyWrite()
-        log.debug("{} matches \"\\S+ReqResult\\S+|\\S+ResponseEntity<.+>\" :{}", typeName, typeName.matches("\\S+ReqResult\\S+|\\S+ResponseEntity<.+>"));
-        return typeName.matches("\\S+ReqResult\\S+|\\S+ResponseEntity<.+>");
+        String regex = "\\S+ReqResult\\S+|\\S+ResponseEntity<.+>";
+        boolean matches = typeName.matches(regex);
+        if (!matches) {
+            log.warn("returnType {} doesn't match regex '{}'", typeName, regex);
+        }
+        return matches;
     }
 
     @Override

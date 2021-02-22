@@ -8,9 +8,7 @@ import com.wangy.model.dto.SpittleDTO;
 import com.wangy.model.vo.SpittleVO;
 import com.wangy.service.ISpittleService;
 import lombok.Setter;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -32,13 +30,13 @@ public class SpittleController {
     private ISpittleService spittleService;
 
     @GetMapping("/user/spittles")
-    public ReqResult<PageDomain<SpittleVO>> getUserSpittlesPage(SpittleDTO spittleDTO) {
+    public ReqResult<PageDomain<SpittleVO>> getUserSpittlesPage(@RequestBody SpittleDTO spittleDTO) {
         IPage<SpittleVO> page = spittleService.pageQuerySpittleBySpitterId(spittleDTO);
         return ReqResult.ok(new PageDomain<>(page));
     }
 
-    @GetMapping("/range/spittles")
-    public ReqResult<PageDomain<SpittleVO>> getSpittlesTimeLinePage(@Valid SpittleDTO spittleDTO) {
+    @PostMapping("/range/spittles")
+    public ReqResult<PageDomain<SpittleVO>> getSpittlesTimeLinePage(@RequestBody @Valid SpittleDTO spittleDTO) {
         IPage<SpittleVO> page = spittleService.pageQuerySpittlesByTimeLine(spittleDTO);
         return ReqResult.ok(new PageDomain<>(page));
     }

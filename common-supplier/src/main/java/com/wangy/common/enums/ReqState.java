@@ -11,8 +11,8 @@ import lombok.Getter;
 public enum ReqState {
     // 自定义返回码，前3位对应标准HTTP状态码，后2位为细分码
     OK(200_00, "http.ok"),
-    VALIDATION_BIND_EXCEPTION(400_00, "validation.bind.exception"),
-    REPEAT_SUBMIT_DENIED(400_01,"repeat.submit.denied"),
+    VALIDATION_BIND_EXCEPTION(400_01, "validation.bind.exception"),
+    REPEAT_SUBMIT_DENIED(400_02,"repeat.submit.denied"),
     UNAUTHORIZED(401_00, "not.authorized"),
     AUTHENTICATE_FAIL(401_01,"authenticate.fail"),
     AUTHENTICATION_ACCESS_DENIED(403_00, "authentication.access.denied"),

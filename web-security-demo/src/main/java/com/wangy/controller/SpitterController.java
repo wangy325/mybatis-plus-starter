@@ -12,6 +12,7 @@ import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import java.util.Objects;
 
@@ -74,7 +75,7 @@ public class SpitterController {
     }
 
     @PostMapping("/update")
-    public ReqResult<?> updateSpitterById(@RequestBody SpitterDTO spitterDTO) {
+    public ReqResult<?> updateSpitterById(@RequestBody @Valid SpitterDTO spitterDTO) {
         spitterService.updateFromDtoById(spitterDTO);
         return ReqResult.ok();
     }

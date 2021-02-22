@@ -287,10 +287,12 @@ if (body instanceof ReqResult) {
     }
 }
 ```
+> 如需在此实践中实现国际化，只需要在每次请求时附加请求参数'lang=locale'，比如想获得繁体中文的请求结果，使用
+>`localhost:8080/test/user/1&lang=zh_TW`即可
 
 ## 4 使用Mockito及MockMVC进行单元测试
 
-## 附：使用curl命令
+## 附：使用curl命令快速进行接口测试
 
 [ruanyifeng.com-curl命令使用指南](http://www.ruanyifeng.com/blog/2019/09/curl-reference.html0)
 
@@ -307,7 +309,6 @@ TODOS:
 - [x] 统一异常处理/引入自定义异常
 - [x] i18n（spring message source）
 - [ ] 引入JWT统一认证
-
 - [ ] 引入SpringSecurity
 
  # 参考
