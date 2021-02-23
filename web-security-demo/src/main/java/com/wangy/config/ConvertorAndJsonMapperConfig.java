@@ -126,7 +126,8 @@ public class ConvertorAndJsonMapperConfig {
      * Json序列化和反序列化转换器，用于转换HTTP 请求体（requestBody）的json以及将我们的对象序列化为返回响应的json<br>
      * 自定义jackson序列化和反序列化的行为，主要针对时间日期的格式
      * <p>
-     * 使用此配置之后可以忽略单独的&#64;{@link com.fasterxml.jackson.annotation.JsonFormat}注解
+     * 使用此配置之后可以忽略单独的&#64;{@link com.fasterxml.jackson.annotation.JsonFormat}注解<br>
+     *     <b>!JsonFormat注解只用来序列化</b>
      */
     @Bean
     public ObjectMapper objectMapper() {

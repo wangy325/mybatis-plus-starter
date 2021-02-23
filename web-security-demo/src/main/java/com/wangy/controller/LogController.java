@@ -43,9 +43,13 @@ public class LogController {
         return ReqResult.ok(rc.getMessage("http.ok"), rc.getLocale());
     }
 
+    /**
+     * httpServlet Request can not get current Locale info:
+     * <a href="https://stackoverflow.com/questions/46412984/controller-httpservletrequest-locale-does-not-change">
+     * https://stackoverflow.com/questions/46412984/controller-httpservletrequest-locale-does-not-change</a>
+     */
     @GetMapping("/request/locale")
-    public ReqResult<?> locale(HttpServletRequest request, HttpServletResponse response){
-        // TODO why this method always return default locale?
+    public ReqResult<?> locale(HttpServletRequest request, HttpServletResponse response) {
         return ReqResult.ok(request.getLocale());
     }
 }

@@ -6,9 +6,14 @@ Accept: */*
 GET {{host}}/log/resolver/locale?lang=zh_TW
 Accept: */*
 
-### 通过HttpServletRequest获取locale信息
+###
+# 通过HttpServletRequest获取locale信息
+# 遗憾的是，HttpServletRequest.getLocale()方法无法获取当前Locale信息
+# 而是根据Accept-Language头设置（如未设置即浏览器默认）的Locale信息
+# 所以，Spring MVC context 使用的Locale信息，还是以地址栏参数为准
 GET {{host}}/log/request/locale?lang=zh_TW
-Accept: */*
+#Accept-Language: en;q=0.6,zh-CN;q=0.5
+
 
 ### get spitter info by spitterId
 GET {{host}}/spitter/{{spitterId}}?lang={{lang}}
