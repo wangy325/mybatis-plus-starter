@@ -81,35 +81,36 @@ public class SpittleControllerTest extends BaseMockInit {
                 paramMap.put(entry.getKey(), Collections.singletonList(String.valueOf(entry.getValue())));
             }
         }
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/spittle/user/spittles")
-            .queryParams(paramMap))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            // get element from json
-            // see https://github.com/json-path/JsonPath
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.currentPage")
-                .value(pageDomain.getCurrentPage()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize")
-                .value(pageDomain.getPageSize()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.pages")
-                .value(pageDomain.getPages()))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.data.total")
-                .value(pageDomain.getTotal()));
+        // perform get with request params transferred by pojo
+        ResultActions resultActions = mockMvc
+                .perform(MockMvcRequestBuilders.get("/spittle/user/spittles")
+                        .queryParams(paramMap));
+        String jsonResult = resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        log.info(jsonResult);
+
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                // get element from json
+                // see https://github.com/json-path/JsonPath
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.currentPage")
+                        .value(pageDomain.getCurrentPage()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pageSize")
+                        .value(pageDomain.getPageSize()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.pages")
+                        .value(pageDomain.getPages()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.total")
+                        .value(pageDomain.getTotal()));
         /* 报错原因 ：double和integer的问题
          * 长整型(long)数据在json序列化之后再反序列化，
          * Java类型将变为integer(如果数据没有超过int的最大值范围)
          * 超过范围为没有问题
-         * <del>不要直接比较对象相等性即可绕过此问题<del>
-         * 可以使用json-path进行json判断
          */
-                /*.andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0]")
-                        .value(objectMapper.convertValue(sample, HashMap.class)))*/
+        /*.andExpect(MockMvcResultMatchers.jsonPath("$.data.records[0]")
+                .value(objectMapper.convertValue(sample, HashMap.class)))*/
 
         Mockito.verify(spittleService, Mockito.times(1))
-            .pageQuerySpittleBySpitterId(Mockito.any(SpittleDTO.class));
+                .pageQuerySpittleBySpitterId(Mockito.any(SpittleDTO.class));
 
-        String jsonResult = resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-        log.info(jsonResult);
         Assert.assertEquals((int) jsonPathParser(jsonResult).read("$.data.records.length()"), 1);
         SpittleVO rvo = jsonPathParser(jsonResult).read("$.data.records[0]", SpittleVO.class);
         Assert.assertEquals(sample, rvo);
@@ -131,7 +132,7 @@ public class SpittleControllerTest extends BaseMockInit {
      * 参考：<a href = "https://www.tutorialfor.com/questions-149885.htm">
      * https://www.tutorialfor.com/questions-149885.htm</a>
      */
-    @Test
+    @Deprecated
     public void getSpittlesTimeLinePageTest() throws Exception {
         dto.setSpitterId(4);
         dto.setCurrentPage(1);
@@ -143,17 +144,18 @@ public class SpittleControllerTest extends BaseMockInit {
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(spittleController).build();
         // /spittle/range/spittles?leftTime=2012-06-09 00:00:00&rightTime=2012-06-09 23:59:59
-        ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.get("/spittle/range/spittles")
-                .flashAttr("spittleDTO", dto))
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-
-        Mockito.verify(spittleService).pageQuerySpittlesByTimeLine(dto);
+        ResultActions resultActions = mockMvc
+                .perform(MockMvcRequestBuilders.get("/spittle/range/spittles")
+                        .flashAttr("spittleDTO", dto));
         // 以下用来获取MockMvc返回(Json)
         MvcResult mvcResult = resultActions.andReturn();
         String jsonResult = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         log.info(jsonResult);
+
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+
+        Mockito.verify(spittleService).pageQuerySpittlesByTimeLine(dto);
 
         PageDomain<SpittleVO> rpg = jsonPathParser(jsonResult).read("$.data", PageDomain.class);
         Assert.assertEquals((int) jsonPathParser(jsonResult).read("$.data.records.length()"), 1);
@@ -163,4 +165,55 @@ public class SpittleControllerTest extends BaseMockInit {
         }});
         Assert.assertEquals(rpg, pageDomain);
     }
+
+    /**
+     * mock post query to /spittle/range/spittles
+     * <b> with post request body like
+     * <pre>
+     *     {
+     *             "leftTime": "2012-06-09 00:00:00",
+     *             "rightTime": "2012-06-09 23:59:59",
+     *             "currentPage":2,
+     *             "pageSize": 1
+     *      }
+     * </pre>
+     *
+     * @throws Exception
+     */
+    @Test
+    public void postSpittlesTimeLinePageTest() throws Exception {
+        dto.setSpitterId(4);
+        dto.setCurrentPage(1);
+        dto.setPageSize(10);
+        dto.setLeftTime(LocalDateTime.parse("2012-06-09T00:00:00.000"));
+        dto.setRightTime(LocalDateTime.parse("2012-06-09T23:59:59.999"));
+
+        Mockito.when(spittleService.pageQuerySpittlesByTimeLine(dto)).thenReturn(page);
+
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(spittleController).build();
+        // perform post request
+        log.info("request body: {}", objectMapper.writeValueAsString(dto));
+        ResultActions resultActions = mockMvc
+                .perform(MockMvcRequestBuilders.post("/spittle/range/spittles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)));
+        // 以下用来获取MockMvc返回(Json)
+        MvcResult mvcResult = resultActions.andReturn();
+        String jsonResult = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        log.info(jsonResult);
+
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+
+        Mockito.verify(spittleService).pageQuerySpittlesByTimeLine(dto);
+
+        PageDomain<SpittleVO> rpg = jsonPathParser(jsonResult).read("$.data", PageDomain.class);
+        Assert.assertEquals((int) jsonPathParser(jsonResult).read("$.data.records.length()"), 1);
+        SpittleVO rvo = jsonPathParser(jsonResult).read("$.data.records[0]", SpittleVO.class);
+        rpg.setRecords(new ArrayList<SpittleVO>() {{
+            add(rvo);
+        }});
+        Assert.assertEquals(rpg, pageDomain);
+    }
+
 }

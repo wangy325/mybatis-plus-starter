@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 public abstract class RepeatSubmitInterceptor extends HandlerInterceptorAdapter {
 
     @Resource
-    @Qualifier("objectMapper")
     protected ObjectMapper objectMapper;
 
     @Override

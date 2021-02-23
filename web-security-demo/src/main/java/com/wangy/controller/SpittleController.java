@@ -30,7 +30,7 @@ public class SpittleController {
     private ISpittleService spittleService;
 
     @GetMapping("/user/spittles")
-    public ReqResult<PageDomain<SpittleVO>> getUserSpittlesPage(@RequestBody SpittleDTO spittleDTO) {
+    public ReqResult<PageDomain<SpittleVO>> getUserSpittlesPage(SpittleDTO spittleDTO) {
         IPage<SpittleVO> page = spittleService.pageQuerySpittleBySpitterId(spittleDTO);
         return ReqResult.ok(new PageDomain<>(page));
     }

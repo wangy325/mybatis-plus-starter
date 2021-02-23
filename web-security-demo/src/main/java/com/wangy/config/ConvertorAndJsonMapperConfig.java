@@ -1,5 +1,6 @@
 package com.wangy.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,6 +14,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -51,7 +54,9 @@ public class ConvertorAndJsonMapperConfig {
      */
     static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
-    /** 匹配通用格式*/
+    /**
+     * 匹配通用格式
+     */
     static final String UNIVERSAL_FORMAT = "[yyyy][[-][/][.]MM][[-][/][.]dd][ ][HH][[:][.]mm][[:][.]ss][[:][.]SSS]";
 
 //    @Autowired
@@ -122,32 +127,55 @@ public class ConvertorAndJsonMapperConfig {
     }
 
 
-    /**
+    /*
      * Json序列化和反序列化转换器，用于转换HTTP 请求体（requestBody）的json以及将我们的对象序列化为返回响应的json<br>
      * 自定义jackson序列化和反序列化的行为，主要针对时间日期的格式
      * <p>
      * 使用此配置之后可以忽略单独的&#64;{@link com.fasterxml.jackson.annotation.JsonFormat}注解<br>
-     *     <b>!JsonFormat注解只用来序列化</b>
+     * <b>!JsonFormat注解只用来序列化</b>
+     *
+     * @param javaTimeModule {@link #javaTimeModule()}
+     * @return {@link ObjectMapper}
+     */
+
+    // 使用自动配置替代
+//    @Bean("objectMapper")
+//    @ConditionalOnClass(JavaTimeModule.class)
+//    public ObjectMapper objectMapper(JavaTimeModule javaTimeModule) {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        // disable(Feature) = configure(Feature, false)
+//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
+//        //ObjectMapper忽略多余字段
+//        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+//
+//
+//        //LocalDateTime系列序列化和反序列化模块，继承自jsr310，我们在这里修改了日期格式
+//        // 注册新的模块到objectMapper
+//        objectMapper.registerModule(javaTimeModule);
+//        return objectMapper;
+//    }
+
+    /**
+     * Module for jackson serialization and deserialization
+     *
+     * @return {@link JavaTimeModule}
+     * @see org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
      */
     @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
-        //ObjectMapper忽略多余字段
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        //LocalDateTime系列序列化和反序列化模块，继承自jsr310，我们在这里修改了日期格式
+    public JavaTimeModule javaTimeModule() {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatterBuilder()));
+
+        // java.time.* 的序列化和反序列化规则
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatterBuilder()));
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(dateTimeFormatterBuilder()));
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)));
         javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateTimeFormatterBuilder()));
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(dateTimeFormatterBuilder()));
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
         javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(dateTimeFormatterBuilder()));
 
 
-        //Date序列化和反序列化
+        //java.util.Date序列化和反序列化
         javaTimeModule.addSerializer(Date.class, new JsonSerializer<Date>() {
             @Override
             public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
@@ -168,12 +196,10 @@ public class ConvertorAndJsonMapperConfig {
                 }
             }
         });
-        // 注册新的模块到objectMapper
-        objectMapper.registerModule(javaTimeModule);
-        return objectMapper;
+        return javaTimeModule;
     }
 
-    private DateTimeFormatter dateTimeFormatterBuilder(){
+    private DateTimeFormatter dateTimeFormatterBuilder() {
         return new DateTimeFormatterBuilder()
                 .appendPattern(UNIVERSAL_FORMAT)
                 .parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDateTime.now().getYear())

@@ -1,6 +1,7 @@
 package com.wangy.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wangy.common.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -34,7 +35,7 @@ public class Spitter extends BaseEntity {
     private String password;
 
     @TableLogic
+    @JsonIgnore
     private Integer deleted;
-
 
 }

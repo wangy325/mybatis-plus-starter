@@ -8,11 +8,24 @@ import org.springframework.lang.NonNull;
 /**
  * 基础响应
  * <p>
- * &#64;{@link JsonInclude} 用来定义序列化规则，当前定义为当{@link ReqResult#data}为空时，忽略此字段的序列化
- * （返回的json中不显示key data）
+ * &#64;{@link JsonInclude} 用来定义序列化规则，当前定义为当{@link ReqResult#data}为null时，忽略此字段的序列化
+ * （返回的json中不显示key data）：
+ * <pre>
+ *     &#64;JsonInclude(value = JsonInclude.Include.NON_NULL)
+ *     private T data;
+ * </pre>
+ * <p>
+ * 其他形式来设置&#64;{@link JsonInclude}：
+ * <pre>
+ *     objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
+ * </pre>
+ * 或者在<code>properties</code>文件中定义：
+ * <pre>
+ *     spring.jackson.default-property-inclusion=non_null
+ * </pre>
  *
  * @author wangy
- * @see JsonInclude;
+ * @see JsonInclude
  */
 @Data
 public class ReqResult<T> {
@@ -21,7 +34,7 @@ public class ReqResult<T> {
 
     private String msg;
 
-    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    //    @JsonInclude(value = JsonInclude.Include.NON_NULL)
     private T data;
 
 

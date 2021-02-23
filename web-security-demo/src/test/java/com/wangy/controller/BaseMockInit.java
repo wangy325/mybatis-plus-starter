@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -27,10 +28,10 @@ import java.util.Set;
  * @date 2021/2/5 / 22:31
  */
 @SpringBootTest
+@TestPropertySource("classpath:application-test.properties")
 public class BaseMockInit {
 
     @Autowired
-    @Qualifier("objectMapper")
     protected ObjectMapper objectMapper;
 
     protected @Mock
