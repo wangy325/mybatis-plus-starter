@@ -54,13 +54,6 @@ public class ConvertorAndJsonMapperConfig {
      */
     static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
 
-    /**
-     * 匹配通用格式
-     */
-    static final String UNIVERSAL_FORMAT = "[yyyy][[-][/][.]MM][[-][/][.]dd][ ][HH][[:][.]mm][[:][.]ss][[:][.]SSS]";
-
-//    @Autowired
-//    GenericConversionService genericConversionService;
 
     /**
      * LocalDate转换器，用于转换RequestParam和PathVariable参数<br>
@@ -71,7 +64,6 @@ public class ConvertorAndJsonMapperConfig {
      */
     @Bean
     public Converter<String, LocalDate> stringToLocalDateConverter() {
-//        genericConversionService.addConverter(String.class, LocalDate.class, source -> LocalDate.parse(source, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)));
         return new Converter<String, LocalDate>() {
             @Override
             public LocalDate convert(String source) {
@@ -89,7 +81,7 @@ public class ConvertorAndJsonMapperConfig {
         return new Converter<String, LocalDateTime>() {
             @Override
             public LocalDateTime convert(String source) {
-                return LocalDateTime.parse(source, dateTimeFormatterBuilder());
+                return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT));
             }
         };
     }
@@ -168,12 +160,7 @@ public class ConvertorAndJsonMapperConfig {
 
         // java.time.* 的序列化和反序列化规则
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
-        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatterBuilder()));
-        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)));
-        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(dateTimeFormatterBuilder()));
-        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
-        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(dateTimeFormatterBuilder()));
-
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
 
         //java.util.Date序列化和反序列化
         javaTimeModule.addSerializer(Date.class, new JsonSerializer<Date>() {
@@ -197,18 +184,5 @@ public class ConvertorAndJsonMapperConfig {
             }
         });
         return javaTimeModule;
-    }
-
-    private DateTimeFormatter dateTimeFormatterBuilder() {
-        return new DateTimeFormatterBuilder()
-                .appendPattern(UNIVERSAL_FORMAT)
-                .parseDefaulting(ChronoField.YEAR_OF_ERA, LocalDateTime.now().getYear())
-                .parseDefaulting(ChronoField.MONTH_OF_YEAR, 1)
-                .parseDefaulting(ChronoField.DAY_OF_MONTH, 1)
-                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                .parseDefaulting(ChronoField.NANO_OF_SECOND, 0)
-                .toFormatter();
     }
 }

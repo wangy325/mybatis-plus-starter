@@ -45,7 +45,7 @@ Content-Type: application/json
 GET {{host}}/spittle/user/spittles?spitterId={{spitterId}}&currentPage={{currentPage}}&pageSize={{pageSize}}&lang={{lang}}
 Accept: */*
 
-### 分页获取spittle， 根据用户spitterId，请求参数放在请求体中的情形:
+### 分页获取spittle， 根据用户spitterId，请求参数放在GET请求体中的情形:
 # public ReqResult<PageDomain<SpittleVO>> getUserSpittlesPage(#RequestBody SpittleDTO spittleDTO) {...}
 GET {{host}}/spittle/user/spittles?lang={{lang}}
 Accept: */*
@@ -80,7 +80,7 @@ Content-Type: application/json
   "pageSize": 1
 }
 
-### 分页获取某个时间段的spittle 2+
+### 分页获取某个时间段的spittle 2+ 反序列化规则测试接口
 POST {{host}}/spittle/range/spittles?lang={{lang}}
 Content-Type: application/json
 

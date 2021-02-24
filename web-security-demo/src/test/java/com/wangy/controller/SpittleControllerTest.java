@@ -2,7 +2,9 @@ package com.wangy.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wangy.common.model.PageDomain;
+import com.wangy.common.utils.SpringUtils;
 import com.wangy.model.dto.SpittleDTO;
 import com.wangy.model.vo.SpittleVO;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +12,13 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -190,13 +196,16 @@ public class SpittleControllerTest extends BaseMockInit {
 
         Mockito.when(spittleService.pageQuerySpittlesByTimeLine(dto)).thenReturn(page);
 
+
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(spittleController).build();
         // perform post request
-        log.info("request body: {}", objectMapper.writeValueAsString(dto));
+        String s = objectMapper.writeValueAsString(dto);
+        log.info("request body: {}", s);
         ResultActions resultActions = mockMvc
                 .perform(MockMvcRequestBuilders.post("/spittle/range/spittles")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)));
+                        .content(s)
+                );
         // 以下用来获取MockMvc返回(Json)
         MvcResult mvcResult = resultActions.andReturn();
         String jsonResult = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
