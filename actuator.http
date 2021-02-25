@@ -1,0 +1,19 @@
+###
+GET http://localhost:9001/actuator
+Accept: */*
+
+###
+GET http://localhost:9001/actuator/info
+Accept: */*
+
+###
+GET http://localhost:9001/actuator/health
+Accept: */*
+
+###
+GET http://localhost:9001/actuator/beans
+Accept: */*
+
+###
+GET http://localhost:9001/actuator/env
+Accept: */*

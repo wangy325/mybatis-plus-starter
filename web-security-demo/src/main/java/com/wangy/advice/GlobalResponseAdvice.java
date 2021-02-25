@@ -5,6 +5,7 @@ import com.wangy.common.enums.ReqState;
 import com.wangy.common.model.ReqResult;
 import com.wangy.common.utils.MessageUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -25,13 +26,16 @@ import java.util.LinkedHashMap;
 @Slf4j
 @RestControllerAdvice
 @SuppressWarnings({"unchecked"})
+
 public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
+    @Value("${management.server.port}")
+    private int actuatorPort;
 
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
         String typeName = returnType.getExecutable().getAnnotatedReturnType().getType().getTypeName();
         // if the resultType matches the regex, then do beforeBodyWrite()
-        String regex = "\\S+ReqResult\\S+|\\S+ResponseEntity<.+>";
+        String regex = "([\\w]+\\.)+([A-z][a-z]+)+(<.*>|\\b)";
         boolean matches = typeName.matches(regex);
         if (!matches) {
             log.warn("returnType {} doesn't match regex '{}'", typeName, regex);
@@ -47,6 +51,12 @@ public class GlobalResponseAdvice<T> implements ResponseBodyAdvice<T> {
                              ServerHttpRequest request,
                              ServerHttpResponse response) {
         try {
+
+            int port = request.getURI().getPort();
+            if (port == actuatorPort) {
+                return body;
+            }
+
             // the regex match message pattern: http.ok, validation.bind.exception,... in messages*.properties
             if (body instanceof ReqResult) {
                 ReqResult<?> bd = (ReqResult<?>) body;
