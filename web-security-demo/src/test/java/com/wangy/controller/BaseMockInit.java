@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.EnumSet;
@@ -31,8 +32,10 @@ import java.util.Set;
 @TestPropertySource("classpath:application-test.properties")
 public class BaseMockInit {
 
-    @Autowired
-    protected ObjectMapper objectMapper;
+//    @Autowired
+//    protected ObjectMapper objectMapper;
+    protected ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().build();
+
 
     protected @Mock
     ISpitterService spitterService;
