@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -32,7 +34,7 @@ public class SpitterControllerTest extends BaseMockInit {
         Spitter spitter = new Spitter();
         BeanUtils.copyBeanProp(spitter, source);
 
-        Mockito.when(spitterService.getById(1)).thenReturn(spitter);
+        when(spitterService.getById(1)).thenReturn(spitter);
         spitterController.setSpitterService(spitterService);
         MockMvc mockMvc = standaloneSetup(spitterController).build();
         // perform get request with path variables
@@ -43,6 +45,6 @@ public class SpitterControllerTest extends BaseMockInit {
                 .andExpect(jsonPath("$.data")
                         .value(objectMapper.convertValue(spitter, HashMap.class)));
 
-        Mockito.verify(spitterService, Mockito.times(1)).getById(1);
+        verify(spitterService).getById(1);
     }
 }
