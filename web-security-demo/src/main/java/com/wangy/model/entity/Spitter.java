@@ -1,10 +1,8 @@
 package com.wangy.model.entity;
 
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wangy.common.model.BaseEntity;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +16,7 @@ import lombok.EqualsAndHashCode;
  * @since 2021-01-22
  */
 @Data
+@TableName
 @EqualsAndHashCode(callSuper = true)
 public class Spitter extends BaseEntity {
 
@@ -33,6 +32,10 @@ public class Spitter extends BaseEntity {
     private String username;
 
     private String password;
+
+    @Version
+    @JsonIgnore
+    private Integer version;
 
     @TableLogic
     @JsonIgnore

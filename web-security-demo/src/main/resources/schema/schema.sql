@@ -8,6 +8,7 @@ CREATE TABLE `spitter`
     `lastName`  VARCHAR(30) NOT NULL,
     `username`  VARCHAR(30) NOT NULL,
     `password`  VARCHAR(30) NOT NULL,
+    `version`   INT(11)     NOT NULL DEFAULT 0,
     `deleted`   TINYINT(2)  NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
@@ -15,13 +16,14 @@ CREATE TABLE `spitter`
 DROP TABLE IF EXISTS `spittle`;
 CREATE TABLE `spittle`
 (
-    `id`        BIGINT       NOT NULL AUTO_INCREMENT,
+    `id`         BIGINT       NOT NULL AUTO_INCREMENT,
     `spitter_id` INT          NOT NULL,
-    `message`   VARCHAR(255) NOT NULL,
-    `time`      TIMESTAMP    NOT NULL,
-    `latitude`  DOUBLE DEFAULT 0,
-    `longitude` DOUBLE DEFAULT 0,
-    `deleted`   TINYINT(2)    NOT NULL DEFAULT 0,
+    `message`    VARCHAR(255) NOT NULL,
+    `time`       TIMESTAMP    NOT NULL,
+    `latitude`   DOUBLE                DEFAULT 0,
+    `longitude`  DOUBLE                DEFAULT 0,
+    `version`    INT(11)               DEFAULT 0,
+    `deleted`    TINYINT(2)   NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 );
 

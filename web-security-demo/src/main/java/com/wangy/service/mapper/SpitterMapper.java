@@ -49,4 +49,7 @@ public interface SpitterMapper extends BaseMapper<Spitter> {
      */
     List<SpitterVO> queryByWrapper(@Param(Constants.WRAPPER) Wrapper<Spitter> wrapper);
 
+    @Select("select * from spitter where spitter.id = #{id} for update")
+    Spitter selectByIdLocked(@Param("id") Integer id);
+
 }

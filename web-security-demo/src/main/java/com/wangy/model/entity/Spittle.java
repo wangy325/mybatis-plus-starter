@@ -1,6 +1,7 @@
 package com.wangy.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.Version;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wangy.common.model.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -40,6 +41,10 @@ public class Spittle extends BaseEntity {
     private Double latitude;
 
     private Double longitude;
+
+    @Version
+    @JsonIgnore
+    private Integer version;
 
     @TableLogic
     @JsonIgnore
